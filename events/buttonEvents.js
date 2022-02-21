@@ -1,9 +1,22 @@
 /* eslint-disable brace-style */
+const beginTracking = require('../buttons/beginTracking');
+const receivePoints = require('../buttons/receivePoints');
+
 module.exports = {
 	name: 'interactionCreate',
-    execute(interaction) {
+    async execute(interaction) {
         if (!interaction.isButton()) return;
-        console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered a button interaction.`);
 
-	},
+        const buttonID = interaction.component.customId;
+        switch (buttonID) {
+            case "beginTracking":
+                beginTracking.execute(interaction);
+                break;
+            case "receivePoints":
+                receivePoints.execute(interaction);
+                break;
+            default:
+                break;
+        }
+    }
 };

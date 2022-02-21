@@ -3,18 +3,19 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('button')
-        .setDescription('Add a button'),
+    data: new SlashCommandBuilder()
+		.setName('engagement-tracking')
+        .setDescription('Add a button to add users to track'),
 
 	async execute(interaction) {
         const row = new MessageActionRow()
         .addComponents(
             new MessageButton()
-                .setCustomId('primary')
-                .setLabel('Primary')
+                .setCustomId('beginTracking')
+                .setLabel('Click Me To Track for Activity Points')
                 .setStyle('PRIMARY'),
         );
-        await interaction.reply({ content: 'Pong', components: [row]});
+        await interaction.reply({ content: 'Track me for activity points', components: [row] });
+
     },
 };

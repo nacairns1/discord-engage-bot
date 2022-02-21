@@ -1,12 +1,15 @@
 /* eslint-disable brace-style */
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
+const { token, mongoosePW } = require('./config.json');
+const mongoose = require('mongoose');
 
-const client = new Client({intents: [Intents.FLAGS.GUILDS]});
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -26,6 +29,31 @@ for (const file of eventFiles) {
 	}
 }
 
+async function dbConnect() {
+	try {
+		mongoose.connect(mongoosePW, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		});
+		await new Promise((resolve, reject) => {
+			mongoose.connection.on("open", () => {
+				console.log("Connected to mongo server.");
+				resolve('connected');
+			});
+		}).then(() => {
+			console.log("Mongo + Server + Bot running");
+			mongoose.connection.disconnect();
+		});
+		
+	} catch (error){
+		'error connecting to db' + error;
+	} 
+
+}
+
+dbConnect();
+
 // Login to Discord with your client's token
+
 client.login(token);
 
