@@ -12,9 +12,11 @@ module.exports = {
         .addComponents(
             new MessageButton()
                 .setCustomId('beginTracking')
-                .setLabel('Click Me To Track for Activity Points')
+                .setLabel('Click Me To Track your Activity Points')
                 .setStyle('PRIMARY'),
         );
+
+
         await interaction.reply({ content: 'Track me for activity points', components: [row] });
 
     },

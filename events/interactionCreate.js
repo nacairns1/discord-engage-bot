@@ -1,8 +1,8 @@
 /* eslint-disable brace-style */
 module.exports = {
 	name: 'interactionCreate',
-	async execute(interaction) {
-
+    async execute(interaction) {
+        
         if (!interaction.isCommand()) return;
         console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered a slash command interaction.`);
         const command = interaction.client.commands.get(interaction.commandName);

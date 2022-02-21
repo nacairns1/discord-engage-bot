@@ -1,4 +1,7 @@
 {
+  "name": "engagement-bot",
+  "version": "1.0.0",
+  "description": "Tracks User Engagement",
   "main": "index.js",
   "dependencies": {
     "@discordjs/builders": "^0.12.0",
