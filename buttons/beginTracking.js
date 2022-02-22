@@ -4,13 +4,12 @@ module.exports = {
 	name: 'beginTracking',
     async execute(interaction) {
         console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered a button interaction.`);
-
-        // upon interaction, collect initial data
+        
         const userId = await interaction.member.id;
         const userName = await interaction.member.displayName;
         const guildId = await interaction.guildId;
         const guildName = await interaction.guild.name;
-        const createdTimeStamp = await interaction.createdAt;
+        const createdTimeStamp = await interaction.createdTimestamp;
         const points = 0;
 
         await interaction.deferReply({ ephemeral: true });

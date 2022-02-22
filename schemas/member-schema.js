@@ -6,7 +6,8 @@ const MemberSchema = new mongoose.Schema({
     guildId: mongoose.SchemaTypes.String,
     guildName: mongoose.SchemaTypes.String,
     roles: mongoose.SchemaTypes.String,
-    points: Number
+    points: Number,
+    createdTimestamp: Number
 });
 
 module.exports = mongoose.model('EngagementTracking', MemberSchema);

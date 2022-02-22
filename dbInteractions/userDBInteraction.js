@@ -25,4 +25,6 @@ const addUser = async (userId, userName, guildId, guildName, createdTimeStamp, p
     });
 };
 
+// createPrediction = async (prediction)
+
 module.exports = { findUser, addUser };
