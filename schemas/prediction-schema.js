@@ -9,7 +9,6 @@ const Prediction = new mongoose.Schema(
                 wager: Number,
                 prediction: Boolean
             }],
-        isActive: Boolean,
         timeCreated: Number
     });
 

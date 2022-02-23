@@ -1,8 +1,18 @@
 const EngagementTracking = require('../schemas/member-schema');
 
 const findUser = async (userId, guildId) => {
-    const member = await EngagementTracking.findOne({ userId: `${userId}`, guildId: `${guildId}` }).exec();
+    const member = await EngagementTracking.findOne({ userId: `${userId}`, guildId: `${guildId}` });
     return member;
+};
+
+const findGroupUsers = async (guildId) => {
+    const members = await EngagementTracking.find({ guildId: `${guildId}` });
+    return members;
+};
+
+const updateUserPoints = async (userFilter, userUpdate) => {
+    const update = await EngagementTracking.findOneAndUpdate(userFilter, userUpdate).exec();
+    return Promise.all([update]);
 };
 
 const addUser = async (userId, userName, guildId, guildName, createdTimeStamp, points) => {
@@ -27,4 +37,4 @@ const addUser = async (userId, userName, guildId, guildName, createdTimeStamp, p
 
 // createPrediction = async (prediction)
 
-module.exports = { findUser, addUser };
+module.exports = { findUser, addUser, findGroupUsers, updateUserPoints };
