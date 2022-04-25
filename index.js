@@ -3,9 +3,17 @@ const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token, mongoosePW } = require('./config.json');
 const mongoose = require('mongoose');
+const {pointsManager, pointsEmitter} = require('./Managers/PointsManager');
 
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_VOICE_STATES] });
+
+const client = new Client({
+	intents: [
+		Intents.FLAGS.GUILDS,
+		Intents.FLAGS.GUILD_MESSAGES,
+		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+		Intents.FLAGS.GUILD_VOICE_STATES]
+});
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -39,10 +47,12 @@ async function dbConnect() {
 		await new Promise((resolve, reject) => {
 			mongoose.connection.on("open", () => {
 				console.log("Connected to mongo server.");
+
+				// locally stores points data 
+				pointsEmitter.emit('startUp');
 				resolve('connected');
 			});
 		}).then(() => {
-			console.log("Mongo + Server + Bot running");
 			mongoose.connection.disconnect();
 		});
 		

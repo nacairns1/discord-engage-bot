@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageCollector, MessageEmbed } = require('discord.js');
-const { emitter } = require('../Prediction/PredictionManager');
+const { emitter } = require('../Managers/PredictionManager');
 
 // async interval
 const asyncInterval = async (callback, ms, triesLeft = 5) => {
@@ -19,11 +19,16 @@ const asyncInterval = async (callback, ms, triesLeft = 5) => {
 };
 
 function parseBelieveOrDoubt(message) {
-    const belRe = /bel/i
-    const douRe = /dou/i 
+    const belRe = /bel/i;
+    const douRe = /dou/i; 
     if (douRe.test(message)) return false;
     if (belRe.test(message)) return true;
     return "N/A";
+}
+
+function garbageCollectorFilter(message) {
+    const predRe = /^[!]predict/;
+    return !predRe.test(message);
 }
 
 // promisify wait
@@ -57,6 +62,7 @@ module.exports = {
         const prediction = new Map;
         const filter = m => (/^[!]predict/i).test(m.content);
         const predictionCol = new MessageCollector(interaction.channel, { filter, time: timeInMs });
+
         const timeCreated = interaction.createdAt;
 
 
@@ -72,7 +78,7 @@ module.exports = {
             // functionality of fetching and deleting messages after 3 seconds
             prediction.set(author, { belief: belief, wager: wager });
             message.reply({
-                content: `${message.author} Bet Received: ${wager} ${tempBelief}`,
+                content: `${message.author} Bet Received: ${wager} ${tempBelief}. Points are validated once prediction closes.`,
                 fetchReply: true, repliedUser: true
             }).then((reply) => {
                 return new Promise((res) => {
@@ -86,7 +92,7 @@ module.exports = {
         });
 
         // on the end of the collection length, emits an event to parse the data to 1) store the data in the db
-        // 2) return the data in an understandable format. 
+        // 2) return the data in a message embed field format
 
         await interaction.reply('Prediction starting soon...', { fetchReply: true });
         await wait(2000);
@@ -105,11 +111,13 @@ module.exports = {
                     },
                     {
                         name: 'Join the new prediction',
-                        value: '\nJoin by typing !Predict [Points] [Believe/Doubt] \n\n Example: !Predict 500 Believe'
+                        value: '\nJoin by typing !Predict [Points] [Believe/Doubt] \n\n Example: !Predict 500 Believe \n\n Start tracking your points and get an initial 500 by reacting to this message'
                     });
 
             await interaction.editReply({ embeds: [newEmbed] });
             if (time === 0) {
+                // emits out the prediction map, the guildId, and the time created 
+                console.log(prediction);
                 emitter.emit('predictionSubmit', interaction.guildId, prediction, timeCreated);
                 return true;
             } else {
@@ -120,12 +128,13 @@ module.exports = {
 
         // The prediction manager then emits back the message in embed form with user snowflakes and bet information.
         emitter.on('validatedBet', displayValidatedBet);
-
+        
         async function displayValidatedBet(validatedBet) {
             const predictionLockedInEmbed = new MessageEmbed()
                 .setTitle(`Prediction Locked In!`)
                 .setDescription(`${description}`)
                 .addFields(validatedBet[0], validatedBet[1]);
+            await console.log(validatedBet);
             await interaction.editReply({
                 content: 'Prediction Ongoing...', embeds: [predictionLockedInEmbed],
                 fetchReply: true

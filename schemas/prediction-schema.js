@@ -9,7 +9,8 @@ const Prediction = new mongoose.Schema(
                 wager: Number,
                 prediction: Boolean
             }],
-        timeCreated: Number
+        timeCreated: Number,
+        open: Boolean
     });
 
 module.exports = mongoose.model('Prediction', Prediction);

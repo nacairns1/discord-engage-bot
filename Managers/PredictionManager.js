@@ -1,8 +1,6 @@
 const EventEmitter = require('events');
-const Prediction = require('../schemas/prediction-schema');
+
 const { findGroupUsers, updateUserPoints } = require('../dbInteractions/userDBInteraction');
-
-
 const emitter = new EventEmitter();
 
 class PredictionStore {
@@ -36,6 +34,7 @@ class PredictionStore {
             });
 
         }).then((res) => {
+            
             return mapToPredictionMessageContent(res);
         }).then((res) => {
             emitter.emit('validatedBet', res);
@@ -56,6 +55,7 @@ async function mapToPredictionMessageContent(validatedMap) {
     let largestBeliever = "No one believed";
 
     validatedMap.forEach((user, userId) => {
+        console.log(user);
         if (user.belief) {
             if (user.wager >= largestBelieve) {
                 largestBelieve = user.wager;
