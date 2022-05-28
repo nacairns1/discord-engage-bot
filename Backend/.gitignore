@@ -1,2 +1,4 @@
 /node_modules
-.dbInit
+dbInit
+test_database.sqlite
+test-database.sqlite-journal
