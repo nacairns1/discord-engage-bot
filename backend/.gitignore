@@ -2,3 +2,4 @@
 dbInit
 test_database.sqlite
 test-database.sqlite-journal
+/database

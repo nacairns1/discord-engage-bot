@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "pino": "^7.11.0"
+  }
+}
