@@ -1,0 +1,16 @@
+const express = require("express");
+const router = express.Router();
+
+
+
+// router.get("/:guildId", getGuildByGuildId);
+
+// router.get("/:guildId/points", getGuildPointsByGuildId);
+
+// router.post("/:guildId/predictions", createNewPredictionInGuildId);
+
+// router.post("/:guildId/:userId", addNewUserInGuildByGuildId);
+
+// router.delete("/:guildId/:userId", removeUserFromGuildByGuildId);
+
+module.exports = router;

@@ -3,8 +3,6 @@ const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token, mongoosePW } = require('./config.json');
 const mongoose = require('mongoose');
-const {pointsManager, pointsEmitter} = require('./Managers/PointsManager');
-
 
 
 const client = new Client({
@@ -17,8 +15,6 @@ const client = new Client({
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
-
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -40,31 +36,20 @@ for (const file of eventFiles) {
 
 async function dbConnect() {
 	try {
-		mongoose.connect(mongoosePW, {
+		await mongoose.connect(mongoosePW, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 		});
-		await new Promise((resolve, reject) => {
-			mongoose.connection.on("open", () => {
+		await mongoose.connection.on("open", () => {
 				console.log("Connected to mongo server.");
-
-				// locally stores points data 
-				pointsEmitter.emit('startUp');
-				resolve('connected');
-			});
-		}).then(() => {
-			mongoose.connection.disconnect();
 		});
-		
-	} catch (error){
-		'error connecting to db' + error;
-	} 
+	} catch (e) {
+		console.log(e);
+	}
 
 }
 
 dbConnect();
-
-// Login to Discord with your client's token
 
 client.login(token);
 
