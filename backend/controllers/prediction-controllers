@@ -1,85 +1,75 @@
-const DUMMY_PREDICTIONS = [
-	{
-		predictionId: "predict1",
-		guildId: "xyz",
-		users: [
-			{
-				userId: "abc",
-				pointsInEscrow: 123,
-				pointsAvailable: 456,
-				prediction: "believe",
-			},
-		],
-		timeStarted: "time 1",
-		timeToExpire: "time 2",
-		active: true,
-	},
-	{
-		predictionId: "predict2",
-		guildId: "plush",
-		users: [
-			{
-				userId: "abc",
-				pointsInEscrow: 123,
-				pointsAvailable: 456,
-				prediction: "believe",
-			},
-			{
-				userId: "def",
-				pointsInEscrow: 556,
-				pointsAvailable: 487,
-				prediction: "doubt",
-			},
-			{
-				userId: "hgi",
-				pointsInEscrow: 10,
-				pointsAvailable: 4000,
-				prediction: "doubt",
-			},
-		],
-		timeStarted: "time 1",
-		timeToExpire: "time 2",
-		active: true,
-	},
-];
+const knex = require("knex");
+const path = require("path");
+const pathToDb = path.resolve("./database/test_database.sqlite");
 
-const getPredictionByPredictionId = (req, res, next) => {
+const dbClient = knex({
+	client: "sqlite3",
+	connection: {
+		filename: pathToDb,
+	},
+	useNullAsDefault: true,
+});
+
+const {
+	addPredictionId,
+	findPredictionId,
+	finishPredictionId,
+} = require("../db-interactions/prediction-db");
+
+const {
+	addPredictionEntry,
+	findPredictionEntry,
+	updatePredictionEntry,
+	finishPredictionEntry,
+	findUsersInPrediction,
+} = require("../db-interactions/prediction-entry-db");
+
+const getPredictionByPredictionId = async (req, res, next) => {
 	const predictionId = req.params.predictionId;
 
-	const prediction = DUMMY_PREDICTIONS.find(
-		(prediction) => prediction.predictionId === predictionId
+	const prediction = await findPredictionId(dbClient, predictionId);
+
+	if (prediction === false) {
+		return res.json({ message: "no prediction found with given id" });
+	}
+	return res.json({ prediction });
+};
+
+const getUsersByPredictionId = async (req, res, next) => {
+	const predictionId = req.params.predictionId;
+	const users = await findUsersInPrediction(dbClient, predictionId);
+	return res.json({ users });
+};
+
+const createNewPredictionInGuildId = async (req, res, next) => {
+	const { guildId, creatorId, predictionId, outcome_1, outcome_2 } = req.body;
+	const newPrediction = await addPredictionId(
+		dbClient,
+		predictionId,
+		guildId,
+		creatorId,
+		outcome_1,
+		outcome_2
 	);
-	if (prediction === undefined) {
-		res.json({ message: "no prediction found with given id" });
-	}
-	res.json({ prediction });
+	return res.json({ newPrediction });
 };
-
-const getUsersByPredictionId = (req, res, next) => {
-	const predictionId = req.params.predictionId;
-	const users = DUMMY_PREDICTIONS.find(
-		(prediction) => prediction.predictionId === predictionId
-	).users;
-
-	if (users === undefined) {
-		res.json({ message: "no users found in prediction with given id" });
-	}
-	res.json({ users });
-};
-
-const createNewPredictionInGuildId = () => {};
 
 const editPredictionByPredictionId = () => {};
 
-const addNewPredictionInGuildId = () => {};
-
-const removeUserFromGuildByGuildId = () => {};
+const finishPredictionByPredictionId = async (req, res, next) => {
+	const { predictionId, decided_outcome } = req.body;
+	const finishedPrediction = await finishPredictionId(
+		dbClient,
+		predictionId,
+		decided_outcome
+	);
+	return res.json({finishedPrediction});
+};
 
 module.exports = {
 	getPredictionByPredictionId,
 	getUsersByPredictionId,
 	createNewPredictionInGuildId,
 	editPredictionByPredictionId,
-	addNewPredictionInGuildId,
-	removeUserFromGuildByGuildId,
+	finishPredictionByPredictionId,
 };

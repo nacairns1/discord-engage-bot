@@ -6,19 +6,17 @@ const {
 	getUsersByPredictionId,
 	createNewPredictionInGuildId,
     editPredictionByPredictionId,
-    addNewPredictionInGuildId,
-    removeUserFromGuildByGuildId
+    finishPredictionByPredictionId
 } = require("../controllers/prediction-controllers");
 
 router.get("/:predictionId/users", getUsersByPredictionId);
+
 router.get("/:predictionId", getPredictionByPredictionId);
 
-router.post("/:predictionId/guildId", createNewPredictionInGuildId);
+router.post("/new", createNewPredictionInGuildId);
 
-router.patch("/:predictionId", editPredictionByPredictionId);
+router.post("/end", finishPredictionByPredictionId);
 
-router.post("/:predictionId/:guildId", addNewPredictionInGuildId);
-
-router.delete("/:guildId/:userId", removeUserFromGuildByGuildId);
+// router.patch("/:predictionId", editPredictionByPredictionId);
 
 module.exports = router;

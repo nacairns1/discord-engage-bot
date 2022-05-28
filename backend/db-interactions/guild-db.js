@@ -19,13 +19,14 @@ const addGuildIdToDb = async (dbClient, guildId) => {
 	const guildInDb = await (findGuildIdInGuilds(dbClient, guildId));
 	if(guildInDb) {
 		logger.info(`${guildId} already found. Returning without creating a duplicate`);
-		return;
+		return false;
 	}
 
 	try {
 		await dbClient("Guilds").insert({ guildId: guildId });
 		logger.info(`Successfully added ${guildId} to Guilds`);
 		const guild = await dbClient("Guilds").select("*");
+		return guild;
 	} catch (e) {
 		logger.error(e);
 	}

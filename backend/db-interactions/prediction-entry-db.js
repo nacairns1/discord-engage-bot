@@ -1,17 +1,5 @@
-const knex = require("knex");
 const { DateTime } = require("luxon");
-const path = require("path");
-const pathToDb = path.resolve("./database/test_database.sqlite");
 const logger = require("pino")();
-
-const dbClient = knex({
-	client: "sqlite3",
-	connection: {
-		filename: pathToDb,
-	},
-	useNullAsDefault: true,
-});
-
 const { findPredictionId } = require("./prediction-db");
 
 const addPredictionEntry = async (
@@ -74,11 +62,22 @@ const findPredictionEntry = async (dbClient, predictionId, userId, guildId) => {
 	}
 };
 
+const findUsersInPrediction = async(dbClient, predictionId) => {
+    const prediction = await findPredictionId(dbClient, predictionId);
+    if (!prediction) {
+        logger.info('no prediction found at given id');
+        return false;
+    }
+    const users = await dbClient('PredictionEntries').where({predictionId}).select('predictionId','userId', 'predicted_outcome', 'wageredPoints');
+    logger.info(users);
+    return users;
+}
+
 const updatePredictionEntry = async (
 	dbClient,
 	predictionId,
 	userId,
-    guildId,
+	guildId,
 	wageredPoints,
 	predicted_outcome
 ) => {
@@ -112,7 +111,6 @@ const finishPredictionEntry = async (
 	earnedPoints,
 	decided_outcome
 ) => {
-	const timeEdited = DateTime.now().toString();
 	const entry = await findPredictionEntry(
 		dbClient,
 		predictionId,
@@ -127,18 +125,13 @@ const finishPredictionEntry = async (
 		const updatedEntry = await dbClient("PredictionEntries")
 			.where({ predictionId, userId, guildId })
 			.update({ decided_outcome, earnedPoints });
-		logger.info(`succesfully finished prediction entry for ${predictionId} ${userId}`);
+		logger.info(
+			`succesfully finished prediction entry for ${predictionId} ${userId}`
+		);
 		return updatedEntry;
 	} catch (e) {
 		logger.error(e);
 	}
 };
 
-updatePredictionEntry(
-	dbClient,
-	"prediction1",
-	"zachy zach zach",
-	"test3",
-	300,
-	"believe"
-);
+module.exports = {addPredictionEntry, findPredictionEntry, updatePredictionEntry, finishPredictionEntry, findUsersInPrediction}

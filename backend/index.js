@@ -13,7 +13,7 @@ app.listen(port, ()=>{
 
 
 app.use(express.json())
-// app.use('/users', userRoutes);
-// app.use('/guilds', guildRoutes);
+app.use('/users', userRoutes);
+app.use('/guilds', guildRoutes);
 app.use('/predictions', predictionRoutes);
 

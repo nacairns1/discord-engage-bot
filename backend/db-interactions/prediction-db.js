@@ -11,7 +11,7 @@ const addPredictionId = async (
 	creatorId,
 	outcome_1,
 	outcome_2,
-	active,
+	active = true,
 	decided_outcome,
 	timeCreated = 0,
 	timeEnded = "In Progress..."
@@ -38,10 +38,11 @@ const addPredictionId = async (
 		};
 		logger.info(`adding:`);
 		logger.info(prediction);
-		await dbClient("Predictions").insert({
+		const newPredict = await dbClient("Predictions").insert({
 			...prediction,
 		});
 		logger.info(`successful`);
+        return newPredict;
 	} catch (e) {
 		logger.info(`unsuccesful`);
 		logger.error(e);
@@ -56,7 +57,7 @@ const findPredictionId = async (dbClient, predictionId) => {
 		logger.info(`no prediction found with ${predictionId}`);
 		return false;
 	}
-	return isPredictionFound[0];
+	return isPredictionFound;
 };
 
 const finishPredictionId = async (dbClient, predictionId, decided_outcome = 'cancel') => {

@@ -1,19 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
+const {getUserByUserId, addNewUserInGuildId, getUserByUserIdGuildId} = require('../controllers/user-controllers.js');
 
+router.get('/find', getUserByUserId);
 
-// router.get('/:userId', getUserByUserId);
+router.get('/find/guild', getUserByUserIdGuildId);
 
-// router.get('/:userId/points', getUserPointsByUserId);
-
-// router.get('/:userId/guilds', getUserGuildsByUserId);
-
-// router.get('/:userId/:guildId', getUserInGuildId);
-
-// router.post('/:userId/:guildId', addNewUserInGuildId);
-
-// router.delete('/:userId/:guildId', removeUserFromGuildId);
+router.post('/new', addNewUserInGuildId);
 
 module.exports = router;
 

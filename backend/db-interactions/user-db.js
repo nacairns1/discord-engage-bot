@@ -1,11 +1,30 @@
 const logger = require("pino")();
 
+const findUserIdInUsers = async (dbClient, userId) => {
+	try {
+		logger.info(`finding ${userId} table Users`);
+		const findUser = await dbClient("Users")
+			.where({ userId: userId })
+			.select("userId","guildId", "points");
+		if (findUser.length === 0) {
+			logger.info(`user not found`);
+			return false;
+		}
+		logger.info(`user found`);
+		logger.info(findUser);
+		return findUser;
+	} catch (e) {
+		logger.error(e);
+	}
+};
+
+
 const findUserIdGuildIdInUsers = async (dbClient, userId, guildId) => {
 	try {
-		logger.info(`finding ${userId} in guild ${guildId} in table Users`);
+		logger.info(`finding ${userId} table Users`);
 		const findUser = await dbClient("Users")
 			.where({ userId: userId, guildId: guildId })
-			.select("guildId", "points");
+			.select("userId","guildId", "points");
 		if (findUser.length === 0) {
 			logger.info(`user not found`);
 			return false;
@@ -95,4 +114,4 @@ const addUserPointsToUserInGuildId = async (
 	}
 };
 
-module.exports = {findUserIdGuildIdInUsers, addUserIdToDb, updateUserPointsToDb, addUserPointsToUserInGuildId}
+module.exports = { findUserIdInUsers, findUserIdGuildIdInUsers, addUserIdToDb, updateUserPointsToDb, addUserPointsToUserInGuildId}
