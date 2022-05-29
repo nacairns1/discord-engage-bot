@@ -38,10 +38,10 @@ model Predictions {
 }
 
 model Users {
-  id                Int    @id @default(autoincrement())
-  userId            String
-  guildId           String
-  points            Int    @default(0)
-  timeCreated       String
-  lastEarnedPonts   String @default("")
+  id              Int    @id @default(autoincrement())
+  userId          String
+  guildId         String
+  points          Int    @default(0)
+  timeCreated     String
+  lastEarnedPonts String @default("")
 }

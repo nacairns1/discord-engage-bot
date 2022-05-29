@@ -9,7 +9,9 @@
     "dev": "nodemon ../dist/discord-interaction/index.js",
     "build": "tsc",
     "postbuild": "cp package*.json ../dist && cd ../dist && npm ci --production",
-    "deploy-commands": "node .../dist/discord-interaction/deploy-commands.js"
+    "deploy-commands": "node .../dist/discord-interaction/deploy-commands.js",
+    "update-prisma": "npm i && cd ../dist && npm i && cd ../src",
+    "postupdate-prisma": "npx prisma generate  && cd ../dist && npx prisma db pull && npx prisma generate "
   },
   "repository": {
     "type": "git",
@@ -25,8 +27,13 @@
     "@discordjs/builders": "^0.13.0",
     "@discordjs/rest": "^0.4.1",
     "@prisma/client": "^3.14.0",
+    "cd": "^0.3.3",
+    "dayjs": "^1.11.2",
     "discord-api-types": "^0.33.0",
-    "discord.js": "^13.7.0"
+    "discord-engage-bot": "file:../dist",
+    "discord.js": "^13.7.0",
+    "i": "^0.3.7",
+    "npm": "^8.11.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.36",
