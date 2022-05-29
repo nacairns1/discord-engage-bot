@@ -1,6 +1,3 @@
 config.json
 node_modules
-.env
-process.env
-.eslintrc.json
 /Backend/test_database

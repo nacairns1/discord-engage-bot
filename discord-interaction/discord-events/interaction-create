@@ -1,0 +1,7 @@
+const interactionCreate = {
+    name: 'interactionCreate',
+    execute(interaction) {
+        console.log(interaction);
+
+    }
+}
