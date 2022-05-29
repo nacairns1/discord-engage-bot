@@ -15,7 +15,7 @@ const client = new Client({
 client.commands = new Collection();
 
 const commandPath = path.resolve("./discord-interaction/commands");
-const eventPath = path.resolve("./discord-interaction/discord-events/");
+const eventPath = path.resolve("./discord-interaction/discord-events");
 
 const commandFiles = fs
 	.readdirSync(commandPath)
@@ -30,10 +30,11 @@ const eventFiles = fs
 	.readdirSync(eventPath)
 	.filter((file) => file.endsWith(".js"));
 
+	
 for (const file of eventFiles) {
-	const filePath = path.join(`${eventPath}, /${file}`)
+
+	const filePath = path.resolve(`${eventPath}`, `${file}`);
 	const event = require(`${filePath}`);
-	console.log(filePath);
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
 	} else {
