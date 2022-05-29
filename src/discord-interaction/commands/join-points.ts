@@ -1,18 +1,18 @@
-const {
+import {
 	Modal,
 	TextInputComponent,
 	MessageActionRow,
 	MessageSelectMenu,
 	MessageButton,
 	MessageEmbed,
-} = require("discord.js");
-const { SlashCommandBuilder } = require("@discordjs/builders");
+	CommandInteraction
+} from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
+import Command from "./CommandInterface";
 
-const ping = {
-	data: new SlashCommandBuilder()
-		.setName("prediction-create")
-		.setDescription("Creates a new Prediction"),
-	async execute(interaction) {
+const ping:Command = {
+	data: new SlashCommandBuilder().setName("prediction-create").setDescription("Creates a new Prediction"),
+	async execute(interaction:CommandInteraction) {
 		const predictionEmbed = new MessageEmbed()
 			.setTitle("Prediction Started!")
 			.setDescription("Prediction outcomes: outcome_1, outcome_2")
@@ -51,4 +51,4 @@ const ping = {
 	},
 };
 
-module.exports = ping;
+export default ping;

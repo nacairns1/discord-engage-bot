@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Guilds {
+  id      Int    @id @default(autoincrement())
+  guildId String
+}
+
+model PredictionEntries {
+  id                Int     @id @default(autoincrement())
+  predictionId      String
+  userId            String
+  guildId           String
+  predicted_outcome String
+  decided_outcome   String?
+  wageredPoints     Int
+  earnedPoints      Int?
+  timeCreated       Int?
+  timeEdited        Int?
+}
+
+model Predictions {
+  id              Int      @id @default(autoincrement())
+  predictionId    String
+  guildId         String?
+  creatorId       String?
+  outcome_1       String
+  outcome_2       String
+  active          Boolean? @default(dbgenerated("'FALSE'"))
+  decided_outcome String?
+  timeCreated     String?
+  timeEnded       String?
+}
+
+model Users {
+  id      Int     @id @default(autoincrement())
+  userId  String
+  guildId String?
+  points  Int     @default(0)
+}

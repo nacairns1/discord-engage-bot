@@ -1,13 +1,13 @@
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
-const fs = require('node:fs');
-const path = require('path');
+import { REST }  from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v9';
+import { token } from '../config.json';
+import * as  fs from 'node:fs';
+import * as path from 'path';
 
 const {clientId, guildId} = require('../config.json');
 
-const commandPath = path.resolve('/home/noahc/Documents/Code/discord-engage-bot/discord-interaction/commands');
-const commands = [];
+const commandPath = path.resolve(__dirname, '/commands');
+const commands = new Array<string>;
 const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
