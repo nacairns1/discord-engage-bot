@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addPredictionEntryToPredictionId = exports.findPredictionByPredictionIdUserId = exports.getPredictionEntriesByPredictionId = exports.getAllPredictionEntries = void 0;
+exports.addPredictionEntryToPredictionId = exports.findPredictionByPredictionIdUserId = exports.findGuildUsersInPrediction = exports.getPredictionEntriesByPredictionId = exports.getAllPredictionEntries = void 0;
 const client_1 = require("@prisma/client");
 const dayjs_1 = __importDefault(require("dayjs"));
 const prisma = new client_1.PrismaClient();
@@ -29,6 +29,12 @@ const getPredictionEntriesByPredictionId = (predictionId) => __awaiter(void 0, v
     return predictionEntries;
 });
 exports.getPredictionEntriesByPredictionId = getPredictionEntriesByPredictionId;
+//finds all guild users in a given prediction
+const findGuildUsersInPrediction = (guildId, predictionId) => __awaiter(void 0, void 0, void 0, function* () {
+    const wagerers = yield prisma.predictionEntries.findMany({ where: { guildId, predictionId } });
+    return wagerers;
+});
+exports.findGuildUsersInPrediction = findGuildUsersInPrediction;
 const findPredictionByPredictionIdUserId = (predictionId, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const predictionEntry = yield prisma.predictionEntries.findFirst({
         where: { predictionId, userId }
@@ -54,4 +60,3 @@ const addPredictionEntryToPredictionId = (predictionId, userId, guildId, predict
     return newPredictionEntry;
 });
 exports.addPredictionEntryToPredictionId = addPredictionEntryToPredictionId;
-(0, exports.addPredictionEntryToPredictionId)('prediction 1', 'Noah BoBoah', 'Fun Guild', 'Victory', 400);

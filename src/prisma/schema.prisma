@@ -8,12 +8,46 @@ datasource db {
 }
 
 model Guilds {
-  guildId     String @id
-  timeCreated String
+  guildId                String                 @id
+  timeCreated            String
+  guildPredictionEntries PredictionEntries[]
+  userMembers            UserGuildMemberships[]
+}
+
+model Users {
+  userId           String                 @id
+  timeCreated      String
+  guildMemberships UserGuildMemberships[]
+}
+
+model UserGuildMemberships {
+  userId            String
+  guildId           String
+  points            Int                 @default(0)
+  timeCreated       String
+  lastEarnedPonts   String              @default("")
+  admin             Boolean?            @default(false)
+  guild             Guilds              @relation(fields: [guildId], references: [guildId])
+  user              Users               @relation(fields: [userId], references: [userId])
+  predictionEntries PredictionEntries[]
+
+  @@unique([userId, guildId])
+}
+
+model Predictions {
+  predictionId      String              @id
+  guildId           String
+  creatorId         String
+  outcome_1         String
+  outcome_2         String
+  active            Boolean?            @default(dbgenerated("'FALSE'"))
+  decided_outcome   String?
+  timeCreated       String
+  timeEnded         String?
+  predictionEntries PredictionEntries[]
 }
 
 model PredictionEntries {
-  id                Int     @id @default(autoincrement())
   predictionId      String
   userId            String
   guildId           String
@@ -23,25 +57,9 @@ model PredictionEntries {
   earnedPoints      Int
   timeCreated       String
   timeEdited        String?
-}
+  guild             Guilds               @relation(fields: [guildId], references: [guildId])
+  prediction        Predictions          @relation(fields: [predictionId], references: [predictionId])
+  userGuildMember   UserGuildMemberships @relation(fields: [userId, guildId], references: [userId, guildId])
 
-model Predictions {
-  predictionId    String   @id
-  guildId         String
-  creatorId       String
-  outcome_1       String
-  outcome_2       String
-  active          Boolean? @default(dbgenerated("'FALSE'"))
-  decided_outcome String?
-  timeCreated     String
-  timeEnded       String?
-}
-
-model Users {
-  id                Int    @id @default(autoincrement())
-  userId            String
-  guildId           String
-  points            Int    @default(0)
-  timeCreated       String
-  lastEarnedPonts   String @default("")
+  @@unique([predictionId, userId, guildId])
 }

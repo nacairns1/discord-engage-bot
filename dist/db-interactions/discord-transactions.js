@@ -14,50 +14,71 @@ const client_1 = require("@prisma/client");
 // change this section from a REST Api to an api for our discord bot to talk back and forth on the same application.
 // No need to create a whole separate web server yet
 const prisma = new client_1.PrismaClient();
-const cashOutPlayers = (predictionId, guildId, decided_outcome) => __awaiter(void 0, void 0, void 0, function* () {
+const cashOutPlayers = (predictionId, decided_outcome) => __awaiter(void 0, void 0, void 0, function* () {
     const totalPool = yield prisma.predictionEntries.aggregate({
         _sum: { wageredPoints: true },
         where: { predictionId },
     });
+    const winnerPool = yield prisma.predictionEntries.aggregate({
+        _sum: { wageredPoints: true },
+        where: { predictionId, predicted_outcome: decided_outcome },
+    });
     let totalPoolSum;
+    let winnerPoolSum;
     if (totalPool._sum.wageredPoints === null)
         return null; // no bets found
+    if (winnerPool._sum.wageredPoints === null)
+        return null; //no winners found]
     totalPoolSum = totalPool._sum.wageredPoints;
-    console.log(`total pool: ${totalPool}`);
-    const victoryPlayers = yield prisma.predictionEntries.findMany({
-        where: { predicted_outcome: decided_outcome },
+    winnerPoolSum = winnerPool._sum.wageredPoints;
+    let winners = yield prisma.predictionEntries.findMany({
+        where: { predicted_outcome: decided_outcome, predictionId },
     });
-    let victoryPool = victoryPlayers.reduce((a, b) => {
-        return a + b.wageredPoints;
-    }, 0);
-    let payout = victoryPlayers.map((p) => {
-        let addedPoints = (p.wageredPoints / victoryPool) * totalPoolSum;
-        return { userId: p.userId, guildId: p.guildId, points: addedPoints };
+    winners = winners.map((player) => {
+        player.earnedPoints = Math.ceil((player.wageredPoints / winnerPoolSum) * totalPoolSum);
+        console.log(`${player.userId} earned ${player.earnedPoints} on a ${player.wageredPoints} wager`);
+        return Object.assign({}, player);
     });
-    console.log(victoryPlayers);
-    console.log(payout);
-    const defeatPlayers = yield prisma.predictionEntries.findMany({
-        where: {
-            NOT: { predicted_outcome: decided_outcome },
+    yield prisma.predictionEntries.updateMany({
+        where: { predictionId },
+        data: {
+            decided_outcome,
         },
     });
-    console.log(defeatPlayers);
-    defeatPlayers.map((p) => {
-        let lostPoints = p.wageredPoints;
-        payout.push({ userId: p.userId, guildId: p.guildId, points: lostPoints });
+    //queue the prediction entries updates
+    const updatedPlayers = winners.map((winner) => {
+        return prisma.predictionEntries.update({
+            data: { earnedPoints: winner.earnedPoints },
+            where: {
+                predictionId_userId_guildId: {
+                    predictionId: winner.predictionId,
+                    userId: winner.userId,
+                    guildId: winner.userId,
+                },
+            },
+        });
     });
-    console.log(payout);
-    // iterates through the players and updates their points
-    for (let i = 0; i < payout.length; i++) {
-        const { userId, guildId, points } = payout[i];
-        const updatePoints = points;
-        const User = yield prisma.users.findFirst({ where: { guildId, userId } });
-        if (User !== null) {
-            const { id, points } = User;
-            console.log(`updating ${User.userId} in ${User.guildId} to points: ${points + updatePoints}`);
-            yield prisma.users.update({ where: { id: id }, data: { points: points + updatePoints } });
-        }
-    }
+    console.log(updatedPlayers);
+    //maps the array of player scores to update
+    // const updatingScores: PrismaPromise<any>[] = winners.map((winner) => {
+    // 	console.log(`queueing update for player ${winner.userId}`);
+    // 	let userPromise = prisma.users.update({
+    // 		data: { points: { increment: winner.earnedPoints } },
+    // 		where: {
+    // 			userId_guildId: {
+    // 				userId: winner.userId,
+    // 				guildId: winner.guildId,
+    // 			},
+    // 		},
+    // 	});
+    // 	return userPromise;
+    // });
+    //updates all of the scores in an all-or-nothing transaction 
+    // ********
+    // RE - ADD ...updatingScores,
+    // ********
+    yield prisma.$transaction([...updatedPlayers]);
+    console.log("successfully updated winners points");
 });
 exports.cashOutPlayers = cashOutPlayers;
-(0, exports.cashOutPlayers)("prediction 1", "Fun Guild", "Victory");
+(0, exports.cashOutPlayers)("prediction 1", "defeat");

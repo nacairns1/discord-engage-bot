@@ -8,40 +8,58 @@ datasource db {
 }
 
 model Guilds {
-  guildId     String @id
-  timeCreated String
+  guildId              String                 @id
+  timeCreated          String
+  PredictionEntries    PredictionEntries[]
+  UserGuildMemberships UserGuildMemberships[]
 }
 
 model PredictionEntries {
-  id                Int     @id @default(autoincrement())
-  predictionId      String
-  userId            String
-  guildId           String
-  predicted_outcome String
-  decided_outcome   String?
-  wageredPoints     Int
-  earnedPoints      Int
-  timeCreated       String
-  timeEdited        String?
+  predictionId         String
+  userId               String
+  guildId              String
+  predicted_outcome    String
+  decided_outcome      String?
+  wageredPoints        Int
+  earnedPoints         Int
+  timeCreated          String
+  timeEdited           String?
+  Guilds               Guilds               @relation(fields: [guildId], references: [guildId])
+  Predictions          Predictions          @relation(fields: [predictionId], references: [predictionId])
+  UserGuildMemberships UserGuildMemberships @relation(fields: [userId, guildId], references: [userId, guildId])
+
+  @@unique([predictionId, userId, guildId])
 }
 
 model Predictions {
-  predictionId    String   @id
-  guildId         String
-  creatorId       String
-  outcome_1       String
-  outcome_2       String
-  active          Boolean? @default(dbgenerated("'FALSE'"))
-  decided_outcome String?
-  timeCreated     String
-  timeEnded       String?
+  predictionId      String              @id
+  guildId           String
+  creatorId         String
+  outcome_1         String
+  outcome_2         String
+  active            Boolean?            @default(dbgenerated("'FALSE'"))
+  decided_outcome   String?
+  timeCreated       String
+  timeEnded         String?
+  PredictionEntries PredictionEntries[]
 }
 
 model Users {
-  id              Int    @id @default(autoincrement())
-  userId          String
-  guildId         String
-  points          Int    @default(0)
-  timeCreated     String
-  lastEarnedPonts String @default("")
+  userId               String                 @id
+  timeCreated          String
+  UserGuildMemberships UserGuildMemberships[]
+}
+
+model UserGuildMemberships {
+  userId            String
+  guildId           String
+  points            Int                 @default(0)
+  timeCreated       String
+  lastEarnedPonts   String              @default("")
+  admin             Boolean?            @default(false)
+  Guilds            Guilds              @relation(fields: [guildId], references: [guildId])
+  Users             Users               @relation(fields: [userId], references: [userId])
+  PredictionEntries PredictionEntries[]
+
+  @@unique([userId, guildId])
 }

@@ -20,6 +20,12 @@ export const getPredictionEntriesByPredictionId = async (
 	return predictionEntries;
 };
 
+//finds all guild users in a given prediction
+export const findGuildUsersInPrediction = async(guildId:string, predictionId: string): Promise<PredictionEntries[]> => {
+    const wagerers = await prisma.predictionEntries.findMany({where: {guildId, predictionId}})
+    return wagerers;
+}
+
 export const findPredictionByPredictionIdUserId = async (
     predictionId: string,
     userId: string
@@ -55,4 +61,3 @@ export const addPredictionEntryToPredictionId = async (
     return newPredictionEntry;
 };
 
-addPredictionEntryToPredictionId('prediction 1', 'Noah BoBoah', 'Fun Guild', 'Victory', 400);
