@@ -36,6 +36,7 @@
     "npm": "^8.11.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.1.0",
     "@types/node": "^17.0.36",
     "nodemon": "^2.0.16",
     "prisma": "^3.14.0"

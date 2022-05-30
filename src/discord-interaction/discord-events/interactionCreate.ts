@@ -5,6 +5,11 @@ import { client } from '../index';
 const interactionCreate:Event = {
 	name: "interactionCreate",
 	async execute(interaction:Interaction) {
+		if (interaction.isButton()) {
+		
+
+		}
+
 		if (interaction.isCommand()) {
 			if (client.commands === undefined) return; 
 			const command = client.commands.get(interaction.commandName);

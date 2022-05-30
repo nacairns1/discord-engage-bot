@@ -31,13 +31,21 @@ const findAllGuilds = () => __awaiter(void 0, void 0, void 0, function* () {
     return guilds;
 });
 exports.findAllGuilds = findAllGuilds;
-// adds a new guild if not a duplicate and returns the new guild object
+// adds a new guild if not a duplicate and returns the new guild object. returns null if rejected.
 const addNewGuild = (guildId) => __awaiter(void 0, void 0, void 0, function* () {
-    if ((0, exports.findGuild)(guildId) !== null) {
-        console.log('duplicate detected. returning without creating a new guild...');
+    try {
+        if ((0, exports.findGuild)(guildId) !== null) {
+            console.log("duplicate detected. returning without creating a new guild...");
+            return null;
+        }
+        const newGuild = yield prisma.guilds.create({
+            data: { guildId, timeCreated: (0, dayjs_1.default)().toISOString() },
+        });
+        return newGuild;
+    }
+    catch (e) {
+        console.error(e);
         return null;
     }
-    const newGuild = yield prisma.guilds.create({ data: { guildId, timeCreated: (0, dayjs_1.default)().toISOString() } });
-    return newGuild;
 });
 exports.addNewGuild = addNewGuild;

@@ -14,6 +14,8 @@ const interactionCreate = {
     name: "interactionCreate",
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (interaction.isButton()) {
+            }
             if (interaction.isCommand()) {
                 if (index_1.client.commands === undefined)
                     return;

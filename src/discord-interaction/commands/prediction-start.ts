@@ -10,8 +10,10 @@ import {
 import { SlashCommandBuilder } from "@discordjs/builders";
 import Command from "./CommandInterface";
 
-const ping:Command = {
-	data: new SlashCommandBuilder().setName("prediction-create").setDescription("Creates a new Prediction"),
+// starts a new prediction
+
+const predictionStart:Command = {
+	data: new SlashCommandBuilder().setName("prediction-start").setDescription("Creates a new active Prediction"),
 	async execute(interaction:CommandInteraction) {
 		const predictionEmbed = new MessageEmbed()
 			.setTitle("Prediction Started!")
@@ -51,4 +53,4 @@ const ping:Command = {
 	},
 };
 
-export default ping;
+export default predictionStart;

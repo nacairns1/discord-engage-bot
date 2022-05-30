@@ -8,7 +8,8 @@ class tsClient extends Client {
 	constructor(options: ClientOptions) {
 		super(options);
 	}
-	commands?: Collection<string, Command>
+	commands?: Collection<string, Command>;
+	buttons?: Collection<string, Command>;
 }
 
 export const client = new tsClient({
