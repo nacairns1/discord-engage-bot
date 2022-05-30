@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addPredictionsToPredictionId = exports.findPredictionByPredictionIdUserId = exports.getPredictionEntriesByPredictionId = exports.getAllPredictionEntries = void 0;
+exports.addPredictionEntryToPredictionId = exports.findPredictionByPredictionIdUserId = exports.getPredictionEntriesByPredictionId = exports.getAllPredictionEntries = void 0;
 const client_1 = require("@prisma/client");
 const dayjs_1 = __importDefault(require("dayjs"));
 const prisma = new client_1.PrismaClient();
@@ -36,7 +36,7 @@ const findPredictionByPredictionIdUserId = (predictionId, userId) => __awaiter(v
     return predictionEntry;
 });
 exports.findPredictionByPredictionIdUserId = findPredictionByPredictionIdUserId;
-const addPredictionsToPredictionId = (predictionId, userId, guildId, predicted_outcome, wageredPoints) => __awaiter(void 0, void 0, void 0, function* () {
+const addPredictionEntryToPredictionId = (predictionId, userId, guildId, predicted_outcome, wageredPoints) => __awaiter(void 0, void 0, void 0, function* () {
     const userCheck = yield (0, exports.findPredictionByPredictionIdUserId)(predictionId, userId);
     if (userCheck !== null) {
         console.log('duplicate prediction entry detected. returning...');
@@ -53,5 +53,5 @@ const addPredictionsToPredictionId = (predictionId, userId, guildId, predicted_o
         } });
     return newPredictionEntry;
 });
-exports.addPredictionsToPredictionId = addPredictionsToPredictionId;
-(0, exports.addPredictionsToPredictionId)('prediction 1', 'Noah BoBoah', 'Fun Guild', 'Victory', 400);
+exports.addPredictionEntryToPredictionId = addPredictionEntryToPredictionId;
+(0, exports.addPredictionEntryToPredictionId)('prediction 1', 'Noah BoBoah', 'Fun Guild', 'Victory', 400);
