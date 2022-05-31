@@ -3,18 +3,31 @@ import { Routes } from 'discord-api-types/v9';
 import { token } from '../config.json';
 import * as  fs from 'node:fs';
 import * as path from 'path';
+import Command from './commands/CommandInterface';
+import { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/rest/v10';
 
 const {clientId, guildId} = require('../config.json');
 
-const commandPath = path.resolve(__dirname, '/commands');
-const commands = new Array<string>;
-const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js'));
+const commandPath = path.resolve(__dirname, './commands');
+const commands = new Array<RESTPostAPIApplicationCommandsJSONBody>;
+const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js') && !file.includes('Interface'));
 
-for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-    console.log(command.data);
+commandFiles.map(file => {
+
+	const individualPath = path.resolve(commandPath,`./${file}`);
+
+	console.log(`queueing command: ${individualPath}`);
+	
+
+	const command = require(individualPath).default;
+
+	if(command.data === undefined) return;
+
+
 	commands.push(command.data.toJSON());
-}
+});
+	
+
 
 const rest = new REST({ version: '9' }).setToken(token);
 

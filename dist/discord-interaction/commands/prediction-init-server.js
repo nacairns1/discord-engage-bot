@@ -16,7 +16,7 @@ const v10_1 = require("discord-api-types/v10");
 // these values will be manual right now but can be refactored later and added to the db as default values and thus customizable.
 const predictionUserInit = {
     data: new builders_1.SlashCommandBuilder()
-        .setName("prediction-init-guild")
+        .setName("prediction-init-server")
         .setDescription("Set up bot")
         .addSubcommand((subcommand) => subcommand
         .setName("info")

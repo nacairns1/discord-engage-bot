@@ -7,7 +7,7 @@ import Command from "./CommandInterface";
 const predictionUserInit: Command = {
 	data: new SlashCommandBuilder()
 		.setName("prediction-user-init")
-		.setDescription("Opts in to earning prediction points on this server"),
+		.setDescription("Opts in to earning points"),
 	async execute(interaction: CommandInteraction) {},
 };
 

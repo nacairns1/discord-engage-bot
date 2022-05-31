@@ -14,7 +14,7 @@ const builders_1 = require("@discordjs/builders");
 const predictionUserInit = {
     data: new builders_1.SlashCommandBuilder()
         .setName("prediction-user-init")
-        .setDescription("Opts in to earning prediction points on this server"),
+        .setDescription("Opts in to earning points"),
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () { });
     },

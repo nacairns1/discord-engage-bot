@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const builders_1 = require("@discordjs/builders");
 // the user joins the active prediction with the given id.
 const predictionUserInit = {
-    data: new builders_1.SlashCommandBuilder().setName("prediction-join-active").setDescription("Joins an active prediction given its id"),
+    data: new builders_1.SlashCommandBuilder().setName("prediction-join-active").setDescription("Joins an active prediction"),
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
         });

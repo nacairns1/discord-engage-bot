@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const builders_1 = require("@discordjs/builders");
 // command to give a user points (must be positive value)
 const predictionUserInit = {
-    data: new builders_1.SlashCommandBuilder().setName("prediction-give-user-points").setDescription("Give a user a certain number of points"),
+    data: new builders_1.SlashCommandBuilder().setName("prediction-give-user").setDescription("Give a user points"),
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
         });

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const builders_1 = require("@discordjs/builders");
 // returns the points for the invoking user
 const predictionUserInit = {
-    data: new builders_1.SlashCommandBuilder().setName("prediction-points-user").setDescription("See your earned points on this server"),
+    data: new builders_1.SlashCommandBuilder().setName("prediction-points-user").setDescription("See your earned points"),
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
         });

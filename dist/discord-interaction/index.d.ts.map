@@ -1,1 +1,0 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/discord-interaction/index.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,MAAM,EAAE,UAAU,EAAW,aAAa,EAAE,MAAM,YAAY,CAAC;AAGxE,OAAO,OAAO,MAAM,6BAA6B,CAAC;AAElD,cAAM,QAAS,SAAQ,MAAM;gBAChB,OAAO,EAAE,aAAa;IAGlC,QAAQ,CAAC,EAAE,UAAU,CAAC,MAAM,EAAE,OAAO,CAAC,CAAA;CACtC;AAED,eAAO,MAAM,MAAM,UAOjB,CAAC"}

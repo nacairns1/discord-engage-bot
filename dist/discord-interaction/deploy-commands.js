@@ -38,14 +38,17 @@ const config_json_1 = require("../config.json");
 const fs = __importStar(require("node:fs"));
 const path = __importStar(require("path"));
 const { clientId, guildId } = require('../config.json');
-const commandPath = path.resolve(__dirname, '/commands');
+const commandPath = path.resolve(__dirname, './commands');
 const commands = new Array;
-const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js'));
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    console.log(command.data);
+const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js') && !file.includes('Interface'));
+commandFiles.map(file => {
+    const individualPath = path.resolve(commandPath, `./${file}`);
+    console.log(`queueing command: ${individualPath}`);
+    const command = require(individualPath).default;
+    if (command.data === undefined)
+        return;
     commands.push(command.data.toJSON());
-}
+});
 const rest = new rest_1.REST({ version: '9' }).setToken(config_json_1.token);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {

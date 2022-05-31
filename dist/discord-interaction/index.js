@@ -39,6 +39,7 @@ exports.client = new tsClient({
         discord_js_1.Intents.FLAGS.GUILD_MESSAGES,
         discord_js_1.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
         discord_js_1.Intents.FLAGS.GUILD_VOICE_STATES,
+        discord_js_1.Intents.FLAGS.DIRECT_MESSAGES
     ],
 });
 exports.client.commands = new discord_js_1.Collection();
@@ -48,9 +49,7 @@ const commandFiles = fs
     .readdirSync(commandPath)
     .filter((file) => file.endsWith(".js") && !file.includes('Interface'));
 for (const file of commandFiles) {
-    console.log(file);
     const command = require(`./commands/${file}`).default;
-    console.log(command);
     exports.client.commands.set(command.data.name, command);
 }
 const eventFiles = fs
@@ -58,7 +57,9 @@ const eventFiles = fs
     .filter((file) => file.endsWith(".js") && !file.includes('Interface'));
 for (const file of eventFiles) {
     const filePath = path.resolve(`${eventPath}`, `${file}`);
-    const event = require(`${filePath}`).default;
+    const event = require(`${filePath}`);
+    if (!event)
+        continue;
     if (event.once) {
         exports.client.once(event.name, (...args) => event.execute(...args));
     }

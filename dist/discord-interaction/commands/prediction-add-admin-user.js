@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const builders_1 = require("@discordjs/builders");
 // add one specific admin to have the prediction admin privelege. Adds role if role is set for the server.
 const predictionUserInit = {
-    data: new builders_1.SlashCommandBuilder().setName("prediction-add-admin-user").setDescription("Gives a user prediction admin priveleges"),
+    data: new builders_1.SlashCommandBuilder().setName("prediction-add-admin").setDescription("Gives a user prediction admin priveleges"),
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
         });

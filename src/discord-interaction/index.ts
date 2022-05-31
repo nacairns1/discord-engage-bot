@@ -18,6 +18,7 @@ export const client = new tsClient({
 		Intents.FLAGS.GUILD_MESSAGES,
 		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
 		Intents.FLAGS.GUILD_VOICE_STATES,
+		Intents.FLAGS.DIRECT_MESSAGES
 	],
 });
 
@@ -31,9 +32,8 @@ const commandFiles = fs
 	.filter((file) => file.endsWith(".js") && !file.includes('Interface'));
 
 for (const file of commandFiles) {
-	console.log(file);
+	
 	const command = require(`./commands/${file}`).default;
-	console.log(command);
 	client.commands.set(command.data.name, command);
 }
 
@@ -45,7 +45,9 @@ const eventFiles = fs
 for (const file of eventFiles) {
 
 	const filePath = path.resolve(`${eventPath}`, `${file}`);
-	const event = require(`${filePath}`).default;
+	const event = require(`${filePath}`);
+	if (!event) continue;
+
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
 	} else {
