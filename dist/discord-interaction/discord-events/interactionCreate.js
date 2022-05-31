@@ -1,43 +1,46 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
+const join_button_1 = require("../buttons/join-button");
+const check_name_button_1 = require("../buttons/check-name-button");
+const prediction_end_menu_1 = require("../context-menus/prediction-end-menu");
 const interactionCreate = {
     name: "interactionCreate",
-    execute(interaction) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (interaction.isButton()) {
-                // TO DO IMPLEMENT BUTTON ROUTES 
+    async execute(interaction) {
+        if (interaction.isButton()) {
+            const button = interaction;
+            const buttonId = button.customId;
+            if (buttonId === 'user-join')
+                await (0, join_button_1.addUserOnButtonClicked)(button);
+            if (buttonId === 'user-check')
+                await (0, check_name_button_1.checkPointsMessageButtonController)(button);
+            return;
+        }
+        if (interaction.isModalSubmit()) {
+            // TO DO IMPLEMENT MODAL ROUTES
+        }
+        if (interaction.isSelectMenu()) {
+            const msm = interaction;
+            if (msm.customId === 'prediction-end')
+                await (0, prediction_end_menu_1.predictionEndMenuController)(msm);
+        }
+        if (interaction.isCommand()) {
+            if (index_1.client.commands === undefined)
+                return;
+            const command = index_1.client.commands.get(interaction.commandName);
+            if (!command)
+                return;
+            try {
+                await command.execute(interaction);
             }
-            if (interaction.isModalSubmit()) {
-                // TO DO IMPLEMENT MODAL ROUTES
+            catch (error) {
+                console.error(error);
+                await interaction.reply({
+                    content: "There was an error while executing this command!",
+                    ephemeral: true,
+                });
             }
-            if (interaction.isCommand()) {
-                if (index_1.client.commands === undefined)
-                    return;
-                const command = index_1.client.commands.get(interaction.commandName);
-                if (!command)
-                    return;
-                try {
-                    yield command.execute(interaction);
-                }
-                catch (error) {
-                    console.error(error);
-                    yield interaction.reply({
-                        content: "There was an error while executing this command!",
-                        ephemeral: true,
-                    });
-                }
-            }
-        });
+        }
     },
 };
 exports.default = interactionCreate;

@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,8 +9,8 @@ const dayjs_1 = __importDefault(require("dayjs"));
 // change this section from a REST Api to an api for our discord bot to talk back and forth on the same application.
 // No need to create a whole separate web server yet
 const prisma = new client_1.PrismaClient();
-const cashOutPlayers = (predictionId, decided_outcome) => __awaiter(void 0, void 0, void 0, function* () {
-    const prediction = yield prisma.predictions.findUnique({
+const cashOutPlayers = async (predictionId, decided_outcome) => {
+    const prediction = await prisma.predictions.findUnique({
         where: { predictionId },
     });
     if (prediction === null) {
@@ -30,7 +21,7 @@ const cashOutPlayers = (predictionId, decided_outcome) => __awaiter(void 0, void
         console.log("inactive prediction found. returning without updating...");
         return;
     }
-    let allPlayers = yield prisma.predictionEntries.findMany({
+    let allPlayers = await prisma.predictionEntries.findMany({
         where: { predictionId },
     });
     let totalSum = 0;
@@ -87,7 +78,7 @@ const cashOutPlayers = (predictionId, decided_outcome) => __awaiter(void 0, void
         return updatePromise;
     });
     try {
-        yield prisma.$transaction([
+        await prisma.$transaction([
             predictionUpdate,
             ...allPredictionEntriesUpdateQueue,
             ...allUsersGuildMembershipsUpdateQueue,
@@ -100,10 +91,10 @@ const cashOutPlayers = (predictionId, decided_outcome) => __awaiter(void 0, void
         console.error(e);
         return null;
     }
-});
+};
 exports.cashOutPlayers = cashOutPlayers;
-const addNewDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoints, predicted_outcome) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundUGM = yield prisma.userGuildMemberships.findUnique({
+const addNewDiscordPredictionEntry = async (predictionId, userId, guildId, wageredPoints, predicted_outcome) => {
+    const foundUGM = await prisma.userGuildMemberships.findUnique({
         where: { userId_guildId: { userId, guildId } },
     });
     if (foundUGM === null) {
@@ -136,7 +127,7 @@ const addNewDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoin
             },
         });
         console.log("attempting user update and prediction entry creation...");
-        yield prisma.$transaction([updatedUGM, newPredictionEntry]);
+        await prisma.$transaction([updatedUGM, newPredictionEntry]);
         return { predictionId, userId, guildId, wageredPoints, predicted_outcome };
     }
     // less points wagerd than available in UGM
@@ -159,19 +150,19 @@ const addNewDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoin
             earnedPoints: 0,
         },
     });
-    yield prisma.$transaction([updatedUGM, newPredictionEntry]);
+    await prisma.$transaction([updatedUGM, newPredictionEntry]);
     return { predictionId, userId, guildId, wageredPoints, predicted_outcome };
-});
+};
 exports.addNewDiscordPredictionEntry = addNewDiscordPredictionEntry;
-const updateDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoints, predicted_outcome) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundPredictionEntry = yield prisma.predictionEntries.findUnique({
+const updateDiscordPredictionEntry = async (predictionId, userId, guildId, wageredPoints, predicted_outcome) => {
+    const foundPredictionEntry = await prisma.predictionEntries.findUnique({
         where: { predictionId_userId_guildId: { predictionId, userId, guildId } },
     });
     if (foundPredictionEntry === null) {
         console.error("no user found to update");
         return null;
     }
-    const ugm = yield prisma.userGuildMemberships.findUnique({
+    const ugm = await prisma.userGuildMemberships.findUnique({
         where: { userId_guildId: { userId, guildId } },
     });
     if (ugm === null) {
@@ -206,7 +197,7 @@ const updateDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoin
             });
             // transaction to update the UGM and PE
             console.log("attempting updated wager...");
-            yield prisma.$transaction([updatedUgm, updatedPe]);
+            await prisma.$transaction([updatedUgm, updatedPe]);
             return { predicted_outcome, points: ugm.points };
         }
         // case where we are adding points but still have points leftover
@@ -234,7 +225,7 @@ const updateDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoin
         });
         // transaction to update the UGM and PE
         console.log("attempting updated wager with points remaining (same side)...");
-        yield prisma.$transaction([updatedUgm, updatedPe]);
+        await prisma.$transaction([updatedUgm, updatedPe]);
         return { points: wageredPoints, predicted_outcome };
     }
     // case found where points must be reallocated to new side of wager
@@ -255,7 +246,7 @@ const updateDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoin
                 },
                 data: { predicted_outcome, wageredPoints: { increment: ugm.points } },
             });
-            yield prisma.$transaction([updatedUgm, updatedPE]);
+            await prisma.$transaction([updatedUgm, updatedPE]);
             return {
                 predicted_outcome,
                 points: ugm.points + foundPredictionEntry.wageredPoints,
@@ -271,7 +262,7 @@ const updateDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoin
             data: { predicted_outcome, wageredPoints: wageredPoints },
         });
         // returns the predicted outcome and the new amount of wagered points
-        yield prisma.$transaction([updatedUgm, updatedPE]);
+        await prisma.$transaction([updatedUgm, updatedPE]);
         return {
             predicted_outcome,
             points: wageredPoints,
@@ -285,7 +276,7 @@ const updateDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoin
             where: { predictionId_userId_guildId: { predictionId, userId, guildId } },
             data: { predicted_outcome, wageredPoints },
         });
-        yield prisma.$transaction([updatedPE]);
+        await prisma.$transaction([updatedPE]);
         return { predicted_outcome, points: wageredPoints };
     }
     else {
@@ -301,14 +292,14 @@ const updateDiscordPredictionEntry = (predictionId, userId, guildId, wageredPoin
             where: { predictionId_userId_guildId: { predictionId, userId, guildId } },
             data: { predicted_outcome, wageredPoints: wageredPoints },
         });
-        yield prisma.$transaction([updatedUgm, updatedPE]);
+        await prisma.$transaction([updatedUgm, updatedPE]);
         return { predicted_outcome, points: wageredPoints };
     }
-});
+};
 exports.updateDiscordPredictionEntry = updateDiscordPredictionEntry;
-const updateDiscordUserPointsOnEngagement = (userId, guildId, pointsToAdd) => __awaiter(void 0, void 0, void 0, function* () {
+const updateDiscordUserPointsOnEngagement = async (userId, guildId, pointsToAdd) => {
     const now = (0, dayjs_1.default)();
-    const ugm = yield prisma.userGuildMemberships.findUnique({
+    const ugm = await prisma.userGuildMemberships.findUnique({
         where: { userId_guildId: { userId, guildId } },
     });
     if (ugm === null) {
@@ -319,7 +310,7 @@ const updateDiscordUserPointsOnEngagement = (userId, guildId, pointsToAdd) => __
     // case where its default last time earned points aka never OR past the requisite amount of time to earn points (15 minutes)
     if (ugm.lastEarnedPonts == "" || timeDiff >= 15) {
         //attempt adding the points to the found ugm
-        const updatedUGM = yield prisma.userGuildMemberships.update({
+        const updatedUGM = await prisma.userGuildMemberships.update({
             where: { userId_guildId: { userId, guildId } },
             data: { points: { increment: pointsToAdd }, lastEarnedPonts: now.toISOString() },
         });
@@ -327,5 +318,5 @@ const updateDiscordUserPointsOnEngagement = (userId, guildId, pointsToAdd) => __
     }
     // case where its too soon
     return null;
-});
+};
 exports.updateDiscordUserPointsOnEngagement = updateDiscordUserPointsOnEngagement;

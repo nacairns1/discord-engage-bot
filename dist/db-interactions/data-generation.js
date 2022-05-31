@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -25,7 +16,7 @@ const predictions = [];
 const predictionEntries = [];
 const outcome_1 = "believe";
 const outcome_2 = "doubt";
-const generateData = () => __awaiter(void 0, void 0, void 0, function* () {
+const generateData = async () => {
     console.log("generating guilds....");
     for (let i = 0; i < 5; i++) {
         guilds.push({
@@ -135,17 +126,17 @@ const generateData = () => __awaiter(void 0, void 0, void 0, function* () {
         return prisma.predictionEntries.create({ data: pe });
     });
     console.log('attempting adding data to db....');
-    yield prisma.$transaction([...usersPromiseArr]);
+    await prisma.$transaction([...usersPromiseArr]);
     console.log('users complete. attempting guilds....');
-    yield prisma.$transaction([...guildsPromiseArr]);
+    await prisma.$transaction([...guildsPromiseArr]);
     console.log('guilds complete. attempting predictions....');
-    yield prisma.$transaction([...predictionsPromiseArr]);
+    await prisma.$transaction([...predictionsPromiseArr]);
     console.log('predictions complete. attempting ugms....');
-    yield prisma.$transaction([...filteredUGMPromises]);
+    await prisma.$transaction([...filteredUGMPromises]);
     console.log('ugm complete. attempting pe....');
-    yield prisma.$transaction([...filteredPEPromises]);
+    await prisma.$transaction([...filteredPEPromises]);
     console.log('success');
-});
+};
 (0, discord_transactions_1.cashOutPlayers)('577637', 'doubt');
 /*
 *   Uncomment and run this command to generate fake data in your db for testing purposes

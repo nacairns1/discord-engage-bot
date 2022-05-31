@@ -18,7 +18,8 @@ const messageCreate: Event = {
 			const isUserActive = await findUser(userId);
 			if (!(isGuildActive && isUserActive)) return;
 
-            await updateDiscordUserPointsOnEngagement(userId, guildId, 1000);
+            const engagementUpdate = await updateDiscordUserPointsOnEngagement(userId, guildId, 1000);
+			return engagementUpdate;
 		} catch (e) {
 			console.error(e);
 			return;

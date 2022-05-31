@@ -1,6 +1,19 @@
-import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from '@discordjs/builders'
+import {
+	SlashCommandBooleanOption,
+	SlashCommandBuilder,
+	SlashCommandIntegerOption,
+	SlashCommandOptionsOnlyBuilder,
+	SlashCommandSubcommandBuilder,
+	SlashCommandSubcommandGroupBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+	SlashCommandUserOption,
+} from "@discordjs/builders";
 
 export default interface Command {
-    data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder,
-    execute: Function
+	data:
+		| SlashCommandBuilder
+		| SlashCommandSubcommandBuilder
+		| SlashCommandSubcommandsOnlyBuilder
+		| Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+	execute: Function;
 }

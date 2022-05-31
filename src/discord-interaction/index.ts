@@ -35,7 +35,6 @@ const commandFiles = fs
 	.filter((file) => file.endsWith(".js") && !file.includes('Interface'));
 
 for (const file of commandFiles) {
-	
 	const command = require(`./commands/${file}`).default;
 	client.commands.set(command.data.name, command);
 }

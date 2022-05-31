@@ -7,6 +7,8 @@ import Command from "./CommandInterface";
 const predictionUserInit:Command = {
 	data: new SlashCommandBuilder().setName("prediction-join-active").setDescription("Joins an active prediction"),
 	async execute(interaction:CommandInteraction) {
+		
+
     }
 };
 

@@ -15,7 +15,7 @@ import { addNewUser, findUser } from "../users/db-users";
 import { updateDiscordUserPointsOnEngagement } from "./discord-transactions";
 
 // returns null on rejected added user from discordId
-export const addDiscordUserInGuild = async (
+export const addNewDiscordUserInGuild = async (
 	discordId: string,
 	guildId: string,
 	points: number = 0,
@@ -32,7 +32,7 @@ export const addDiscordUserInGuild = async (
 		const existingUser = await findUser(discordId);
 		if (existingUser) {
 			console.log(
-				`Existing User detected. Creating a new guild membership....`
+				`Existing User detected. Creating a new guild membership in ${guildId}....`
 			);
 			const updatedUGM = await addNewUserGuildMembership(
 				discordId,

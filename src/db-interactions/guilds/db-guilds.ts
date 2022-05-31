@@ -23,11 +23,12 @@ export const findAllGuilds = async () => {
 // adds a new guild if not a duplicate and returns the new guild object. returns null if rejected.
 export const addNewGuild = async (guildId: string): Promise<Guilds | null> => {
 	try {
-		if (findGuild(guildId) !== null) {
+		const guild = await findGuild(guildId)
+		if (guild !== null) {
 			console.log(
 				"duplicate detected. returning without creating a new guild..."
 			);
-			return null;
+			return guild;
 		}
 		const newGuild = await prisma.guilds.create({
 			data: { guildId, timeCreated: dayjs().toISOString() },
