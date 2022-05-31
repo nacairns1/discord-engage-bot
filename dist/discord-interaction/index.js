@@ -43,6 +43,7 @@ exports.client = new tsClient({
     ],
 });
 exports.client.commands = new discord_js_1.Collection();
+exports.client.intervals = new discord_js_1.Collection();
 const commandPath = path.resolve(__dirname, "./commands");
 const eventPath = path.resolve(__dirname, "./discord-events");
 const commandFiles = fs
@@ -57,9 +58,8 @@ const eventFiles = fs
     .filter((file) => file.endsWith(".js") && !file.includes('Interface'));
 for (const file of eventFiles) {
     const filePath = path.resolve(`${eventPath}`, `${file}`);
-    const event = require(`${filePath}`);
-    if (!event)
-        continue;
+    const event = require(filePath).default;
+    console.log(`adding listener for events: ${event.name}`);
     if (event.once) {
         exports.client.once(event.name, (...args) => event.execute(...args));
     }

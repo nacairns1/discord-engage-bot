@@ -15,6 +15,10 @@ const interactionCreate = {
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
             if (interaction.isButton()) {
+                // TO DO IMPLEMENT BUTTON ROUTES 
+            }
+            if (interaction.isModalSubmit()) {
+                // TO DO IMPLEMENT MODAL ROUTES
             }
             if (interaction.isCommand()) {
                 if (index_1.client.commands === undefined)

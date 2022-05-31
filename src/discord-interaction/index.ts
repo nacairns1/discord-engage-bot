@@ -9,7 +9,8 @@ class tsClient extends Client {
 		super(options);
 	}
 	commands?: Collection<string, Command>;
-	buttons?: Collection<string, Command>;
+	intervals?: Collection<string, NodeJS.Timer>
+	
 }
 
 export const client = new tsClient({
@@ -20,9 +21,11 @@ export const client = new tsClient({
 		Intents.FLAGS.GUILD_VOICE_STATES,
 		Intents.FLAGS.DIRECT_MESSAGES
 	],
+	
 });
 
 client.commands = new Collection();
+client.intervals = new Collection();
 
 const commandPath = path.resolve(__dirname, "./commands");
 const eventPath = path.resolve(__dirname, "./discord-events");
@@ -45,8 +48,9 @@ const eventFiles = fs
 for (const file of eventFiles) {
 
 	const filePath = path.resolve(`${eventPath}`, `${file}`);
-	const event = require(`${filePath}`);
-	if (!event) continue;
+	
+	const event = require(filePath).default;
+	console.log(`adding listener for events: ${event.name}`);
 
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));

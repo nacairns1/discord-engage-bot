@@ -6,7 +6,13 @@ const interactionCreate:Event = {
 	name: "interactionCreate",
 	async execute(interaction:Interaction) {
 		if (interaction.isButton()) {
-		
+
+			// TO DO IMPLEMENT BUTTON ROUTES 
+		}
+
+		if (interaction.isModalSubmit()) {
+			 
+			// TO DO IMPLEMENT MODAL ROUTES
 
 		}
 
