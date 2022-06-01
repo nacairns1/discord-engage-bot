@@ -1,9 +1,9 @@
 import { PredictionEntries } from "@prisma/client";
-import { MessageSelectMenu, SelectMenuInteraction } from "discord.js";
+import { SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
 import { cashOutPlayers } from "../../db-interactions/discord/discord-transactions";
 import { predictionEntryModalGenerator } from "../modals/prediction-enter-modals";
 
-export const predictionEnterMenuFunc = (pid: string, outcome_1: string, outcome_2: string) => new MessageSelectMenu()
+export const predictionEnterMenuFunc = (pid: string, outcome_1: string, outcome_2: string) => new SelectMenuBuilder()
 	.setCustomId("prediction-enter")
 	.setPlaceholder("SELECTING AN OPTION OPENS A PREDICTION INPUT")
 	.addOptions([

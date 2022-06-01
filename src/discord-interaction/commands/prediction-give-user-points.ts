@@ -31,12 +31,12 @@ const predictionGiveUser: Command = {
 	async execute(interaction: CommandInteraction) {
 		await interaction.deferReply();
 		const sendingUser = interaction.user;
-		const receivingUser = interaction.options.getUser("User");
-		const points = interaction.options.getInteger("Points");
+		const receivingUser = interaction.options.getUser("user", true);
+		const points = interaction.options.get("points", true).value;
 
 		if (interaction.guildId === null) return;
 		if (receivingUser === null) return;
-		if (points === null) return;
+		if (typeof points !== 'number') return;
 		// try catch block for finding if the sending user is an admin or has not opted in
 		try {
 			const isAdmin = await findUserGuildMembership(

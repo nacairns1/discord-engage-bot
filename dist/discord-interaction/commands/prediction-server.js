@@ -24,8 +24,8 @@ const predictionServer = {
         .setRequired(true))),
     async execute(interaction) {
         var _a, _b;
-        const initChannel = interaction.options.getChannel("init-channel");
-        if (((_a = interaction.guild) === null || _a === void 0 ? void 0 : _a.id) === null || ((_b = interaction.guild) === null || _b === void 0 ? void 0 : _b.id) === undefined)
+        const initChannel = interaction.options.get("init-channel", true).channel;
+        if (((_a = interaction.guild) === null || _a === void 0 ? void 0 : _a.id) === null || ((_b = interaction.guild) === null || _b === void 0 ? void 0 : _b.id) === undefined || initChannel === undefined)
             return;
         await interaction.reply({ content: "adding server....", fetchReply: true });
         const addNewGuild = await (0, discord_guilds_1.addNewDiscordGuild)(interaction.guild.id);
@@ -46,7 +46,7 @@ const predictionServer = {
             }
             ;
             const channel = interaction.client.channels.cache.get(initChannelid);
-            if ((channel === null || channel === void 0 ? void 0 : channel.type) === "GUILD_TEXT") {
+            if ((channel === null || channel === void 0 ? void 0 : channel.type) === v10_1.ChannelType.GuildText) {
                 channel.send(initialContent);
             }
         }

@@ -1,4 +1,4 @@
-import { ButtonInteraction, Interaction, MessageContextMenuInteraction, MessageSelectMenu, ModalSubmitInteraction, ReactionUserManager, SelectMenuInteraction } from 'discord.js';
+import { ButtonInteraction, Interaction, ModalSubmitInteraction, ReactionUserManager, SelectMenuInteraction } from 'discord.js';
 import Event from './EventInterface';
 import { client } from '../index';
 import { addUserOnButtonClicked } from '../buttons/join-button';
@@ -7,18 +7,19 @@ import { predictionEndMenuController } from '../context-menus/prediction-end-men
 import { enterUserOnButtonClicked } from '../buttons/enter-prediction-buton';
 import { predictionEnterMenuController } from '../context-menus/prediction-enter-menu';
 import { modalEnterSubmitHandler } from '../modals/prediction-enter-modals';
+import { predictionEndOnButtonClicked } from '../buttons/prediction-end-button';
 
 const interactionCreate:Event = {
 	name: "interactionCreate",
 	async execute(interaction:Interaction) {
 
-		console.log(interaction);
 		if (interaction.isButton()) {
 			const button:ButtonInteraction = interaction;
 			const buttonId = button.customId;
 			if (buttonId === 'user-join') await addUserOnButtonClicked(button);
 			if (buttonId === 'user-check') await checkPointsMessageButtonController(button);
 			if (buttonId.includes('user-enter')) await enterUserOnButtonClicked(button);
+			if (buttonId === 'user-end') await predictionEndOnButtonClicked(button);
 			return;
 		}
 

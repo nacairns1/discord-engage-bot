@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkPointsMessageButtonController = exports.checkPointsMessageButton = void 0;
 const discord_js_1 = require("discord.js");
 const userGuildMemberships_1 = require("../../db-interactions/userGuildMemberships/userGuildMemberships");
-exports.checkPointsMessageButton = new discord_js_1.MessageButton()
+exports.checkPointsMessageButton = new discord_js_1.ButtonBuilder()
     .setCustomId("user-check")
     .setLabel("CHECK POINTS!")
-    .setStyle("SECONDARY");
+    .setStyle(discord_js_1.ButtonStyle.Secondary);
 const checkPointsMessageButtonController = async (interaction) => {
     const userId = interaction.user.id;
     const guildId = interaction.guildId;

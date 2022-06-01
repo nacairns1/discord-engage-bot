@@ -1,6 +1,6 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "@discordjs/builders";
 
-export const helpEmbed = new MessageEmbed()
+export const helpEmbed = new EmbedBuilder()
 	.setAuthor({
 		name: "PredictionBot",
 		url: "https://github.com/nacairns1/discord-engage-bot",

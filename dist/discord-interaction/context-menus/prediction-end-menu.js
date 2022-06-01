@@ -3,19 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.predictionEndMenuController = exports.predictionEndMenuFunc = void 0;
 const discord_js_1 = require("discord.js");
 const discord_transactions_1 = require("../../db-interactions/discord/discord-transactions");
-const predictionEndMenuFunc = (outcome_1, outcome_2) => new discord_js_1.MessageSelectMenu()
+const predictionEndMenuFunc = (outcome_1, outcome_2) => new discord_js_1.SelectMenuBuilder()
     .setCustomId("prediction-end")
     .setPlaceholder("SELECTING AN OPTION ENDS THE PREDICTION")
     .addOptions([
     {
         label: `${outcome_1}`,
         description: "Select this to end the prediction",
-        value: "outcome_1",
+        value: `${outcome_1}`,
     },
     {
         label: `${outcome_2}`,
         description: "Select this to end the prediction",
-        value: "outcome_2",
+        value: `${outcome_2}`,
     },
     {
         label: `REFUND`,

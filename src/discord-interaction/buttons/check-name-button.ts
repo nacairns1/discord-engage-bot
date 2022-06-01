@@ -1,10 +1,10 @@
-import { ButtonInteraction, MessageButton } from "discord.js";
+import { ButtonBuilder, ButtonInteraction, ButtonStyle, } from "discord.js";
 import { findUserGuildMembership } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
 
-export const checkPointsMessageButton = new MessageButton()
+export const checkPointsMessageButton = new ButtonBuilder()
 	.setCustomId("user-check")
 	.setLabel("CHECK POINTS!")
-	.setStyle("SECONDARY");
+	.setStyle(ButtonStyle.Secondary);
 
 export const checkPointsMessageButtonController = async (
 	interaction: ButtonInteraction

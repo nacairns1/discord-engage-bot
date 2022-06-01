@@ -8,11 +8,8 @@ import { TextInputStyle } from "discord-api-types/v10";
 import {
 	ButtonInteraction,
 	Message,
-	MessageActionRow,
-	MessageButton,
-	MessageSelectMenu,
-	Modal,
 	ModalActionRowComponent,
+	ModalActionRowComponentBuilder,
 	ModalSubmitInteraction,
 	TextInputComponent,
 } from "discord.js";
@@ -22,30 +19,28 @@ import wordsToNumbers from "words-to-numbers";
 import { addNewDiscordPredictionEntry } from "../../db-interactions/discord/discord-transactions";
 
 export const predictionEntryModalGenerator = (predicted_outcome: string) => {
-	const pointsInput = new TextInputComponent()
+	const pointsInput: ModalActionRowComponentBuilder = new TextInputBuilder()
 		.setCustomId("predicted-points")
 		.setLabel(`How many points do you want to wager?`)
 		.setValue("0")
 		.setPlaceholder("MUST Be a Number")
 		.setRequired(true)
-		.setStyle("SHORT");
+		.setStyle(TextInputStyle.Short);
 
-	const choicesInput = new TextInputComponent()
+	const choicesInput: ModalActionRowComponentBuilder = new TextInputBuilder()
 		.setCustomId("predicted-outcome")
 		.setLabel("Predicted Outcome")
 		.setValue(predicted_outcome)
 		.setRequired(true)
-		.setStyle("SHORT");
+		.setStyle(TextInputStyle.Short);
 
-	return new Modal()
+	const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(pointsInput);
+	const secondActionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(choicesInput);
+
+	return new ModalBuilder()
 		.setCustomId(`enter-modal`)
 		.setTitle(`Prediction Entry for ${predicted_outcome}`)
-		.setComponents(
-			new MessageActionRow<ModalActionRowComponent>().setComponents(
-				pointsInput
-			),
-			new MessageActionRow<any>().setComponents(choicesInput)
-		);
+		.addComponents(firstActionRow, secondActionRow);
 };
 
 export const modalEnterSubmitHandler = async (
@@ -72,7 +67,7 @@ export const modalEnterSubmitHandler = async (
 		return;
 	}
 	let wagered_points: number;
-	
+
 	if (typeof wagered_points_input === "number") {
 		wagered_points = wagered_points_input;
 	} else {
@@ -111,17 +106,18 @@ export const modalEnterSubmitHandler = async (
 		if (wagered_points <= 0) {
 			await interaction.followUp({
 				content: "You have to bet a valid number of points!",
-				ephemeral: true
-			})
+				ephemeral: true,
+			});
 		}
 
 		await interaction.followUp({
 			content: `Successfully submitted ${newPredictionEntry.wageredPoints} points for **${newPredictionEntry.predicted_outcome}**`,
 			ephemeral: true,
 		});
-	} catch (e) { 
+	} catch (e) {
 		await interaction.followUp({
-			content: "Error adding your prediction! Check and see if its still open and try again.",
+			content:
+				"Error adding your prediction! Check and see if its still open and try again.",
 			ephemeral: true,
 		});
 		return;

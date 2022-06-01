@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const builders_1 = require("@discordjs/builders");
-const discord_js_1 = require("discord.js");
 const db_predictions_1 = require("../../db-interactions/predictions/db-predictions");
 const userGuildMemberships_1 = require("../../db-interactions/userGuildMemberships/userGuildMemberships");
 const prediction_end_menu_1 = require("../context-menus/prediction-end-menu");
@@ -37,8 +36,8 @@ const predictionUserInit = {
                     ephemeral: true,
                 });
             }
-            const predictionId = interaction.options.getString("predictionid");
-            if (predictionId === null) {
+            const predictionId = interaction.options.get("predictionid", true).value;
+            if (typeof predictionId !== 'string') {
                 interaction.followUp({
                     content: "No prediction found with the given ID",
                     ephemeral: true,
@@ -49,7 +48,8 @@ const predictionUserInit = {
             if (p === null)
                 throw Error("no prediction found");
             const { outcome_1, outcome_2 } = p;
-            const actionRow = new discord_js_1.MessageActionRow().addComponents((0, prediction_end_menu_1.predictionEndMenuFunc)(outcome_1, outcome_2));
+            const selectMenu = (0, prediction_end_menu_1.predictionEndMenuFunc)(outcome_1, outcome_2);
+            const actionRow = new builders_1.ActionRowBuilder().addComponents(selectMenu);
             await interaction.followUp({
                 content: `End the prediction here for pid: ${predictionId}`,
                 components: [actionRow],

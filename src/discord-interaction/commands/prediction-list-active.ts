@@ -2,8 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { Predictions } from "@prisma/client";
 import {
 	CommandInteraction,
-	MessageEmbed,
-	MessageEmbedOptions,
+	EmbedBuilder,
 } from "discord.js";
 import { getAllActivePredictionsInGuildId } from "../../db-interactions/discord/discord-predictions";
 import Command from "./CommandInterface";
@@ -29,7 +28,7 @@ const listEmbedBuilder = (lp: Predictions[]) => {
 		});
 	}
 
-	return new MessageEmbed()
+	return new EmbedBuilder()
 		.setAuthor(author)
 		.setDescription("Active Predictions")
 		.setFields([...fields])

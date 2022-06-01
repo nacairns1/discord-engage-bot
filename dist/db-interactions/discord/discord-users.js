@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addPointsToUserOnEngagement = exports.removePointsFromDiscordUserInGuild = exports.addPointsToDiscordUserInGuild = exports.addNewDiscordUserInGuild = void 0;
+exports.updateDiscordUserAdminRole = exports.addPointsToUserOnEngagement = exports.removePointsFromDiscordUserInGuild = exports.addPointsToDiscordUserInGuild = exports.addNewDiscordUserInGuild = void 0;
 const userGuildMemberships_1 = require("../userGuildMemberships/userGuildMemberships");
 const db_users_1 = require("../users/db-users");
 const discord_transactions_1 = require("./discord-transactions");
@@ -72,3 +72,16 @@ const addPointsToUserOnEngagement = async (userId, guildId, pointsToAdd) => {
     }
 };
 exports.addPointsToUserOnEngagement = addPointsToUserOnEngagement;
+const updateDiscordUserAdminRole = async (userId, guildId, admin) => {
+    const prevUGM = await (0, userGuildMemberships_1.findUserGuildMembership)(userId, guildId);
+    if (prevUGM === null)
+        return null;
+    if (prevUGM.admin === admin) {
+        return null;
+    }
+    else {
+        const newUGM = await (0, userGuildMemberships_1.updateUserAdminPrivelege)(userId, guildId, admin);
+        return newUGM;
+    }
+};
+exports.updateDiscordUserAdminRole = updateDiscordUserAdminRole;
