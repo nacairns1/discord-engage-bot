@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.finishPrediction = exports.addNewPrediction = exports.findPredictionById = exports.getAllPredictions = void 0;
+exports.updatePredictionToClosed = exports.finishPrediction = exports.addNewPrediction = exports.findPredictionById = exports.getAllPredictions = void 0;
 const client_1 = require("@prisma/client");
 const dayjs_1 = __importDefault(require("dayjs"));
 const prisma = new client_1.PrismaClient();
@@ -33,6 +33,7 @@ const addNewPrediction = async (predictionId, guildId, creatorId, outcome_1, out
             outcome_1,
             outcome_2,
             active,
+            isOpen: true,
             decided_outcome,
             timeCreated,
         },
@@ -45,12 +46,27 @@ const finishPrediction = async (predictionId, decided_outcome) => {
     const predictionSearch = await (0, exports.findPredictionById)(predictionId);
     if (predictionSearch === null || !predictionSearch.active) {
         console.log("Not active prediction found. returning....");
-        return;
+        return null;
     }
     const updatePrediction = await prisma.predictions.update({
         where: { predictionId },
         data: { decided_outcome, active: false, timeEnded: (0, dayjs_1.default)().toISOString() },
     });
     console.log(updatePrediction);
+    return updatePrediction;
 };
 exports.finishPrediction = finishPrediction;
+const updatePredictionToClosed = async (predictionId) => {
+    const prediction = await (0, exports.findPredictionById)(predictionId);
+    if (prediction === null) {
+        console.log('null prediction found. returning null');
+        return null;
+    }
+    if (!prediction.active) {
+        console.log('inactive prediction found. Cannot change the open or closed status of a prediction past its initial time. Returning...');
+        return null;
+    }
+    const updatePredictionToClosed = await prisma.predictions.update({ where: { predictionId }, data: { isOpen: false } });
+    return updatePredictionToClosed;
+};
+exports.updatePredictionToClosed = updatePredictionToClosed;

@@ -15,11 +15,15 @@ const cashOutPlayers = async (predictionId, decided_outcome) => {
     });
     if (prediction === null) {
         console.log("no prediction found. returning....");
-        return;
+        return null;
     }
     if (!prediction.active) {
         console.log("inactive prediction found. returning without updating...");
-        return;
+        return null;
+    }
+    if (prediction.isOpen) {
+        console.log("The prediction found is still open for entry. Returning null");
+        return null;
     }
     let allPlayers = await prisma.predictionEntries.findMany({
         where: { predictionId },

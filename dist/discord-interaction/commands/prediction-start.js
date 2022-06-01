@@ -7,6 +7,7 @@ const userGuildMemberships_1 = require("../../db-interactions/userGuildMembershi
 const discord_predictions_1 = require("../../db-interactions/discord/discord-predictions");
 const db_predictions_1 = require("../../db-interactions/predictions/db-predictions");
 const db_prediction_entries_1 = require("../../db-interactions/prediction-entries/db-prediction-entries");
+const enter_prediction_buton_1 = require("../buttons/enter-prediction-buton");
 // starts a new prediction
 const predictionStart = {
     data: new builders_1.SlashCommandBuilder()
@@ -32,7 +33,6 @@ const predictionStart = {
         const outcome_1 = interaction.options.getString("outcome_1");
         const outcome_2 = interaction.options.getString("outcome_2");
         let time_open = interaction.options.getInteger("time_open");
-        console.log({ predictionId, user, outcome_1, outcome_2, time_open });
         if (interaction.guildId === null ||
             outcome_1 === null ||
             outcome_2 === null ||
@@ -57,9 +57,9 @@ const predictionStart = {
             return null;
         }
         function timeout(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
+            return new Promise((resolve) => setTimeout(resolve, ms));
         }
-        while (time_open >= 0) {
+        while (time_open > 0) {
             const message = await embedPredictionBuilder(predictionId, interaction.guildId, time_open);
             if (message.components === undefined || message.embeds === undefined)
                 return;
@@ -72,7 +72,20 @@ const predictionStart = {
             time_open--;
         }
         const finalMessage = await embedPredictionBuilder(predictionId, interaction.guildId, time_open);
-        await interaction.editReply({ content: 'Prediction Closed!', embeds: finalMessage.embeds });
+        await interaction.editReply({
+            content: "Prediction Closed!",
+            embeds: finalMessage.embeds,
+            components: [new discord_js_1.MessageActionRow().addComponents(enter_prediction_buton_1.closedMessageButton, check_name_button_1.checkPointsMessageButton)]
+        });
+        const update = await (0, db_predictions_1.updatePredictionToClosed)(predictionId);
+        if (update === null) {
+            await interaction.followUp({
+                content: "Error closing the prediction to new entries. Please check to see the prediction is still considered active (this means closable)",
+                ephemeral: true,
+            });
+            return;
+        }
+        console.log(`prediction ${predictionId} closed successfully!`);
     },
 };
 const embedPredictionBuilder = async (predictionId, guildId, time) => {
@@ -138,10 +151,7 @@ const embedPredictionBuilder = async (predictionId, guildId, time) => {
         .setFooter({
         text: "Prediction Bot",
     });
-    const submitRow = new discord_js_1.MessageActionRow().addComponents(new discord_js_1.MessageButton()
-        .setCustomId("prediction-enter")
-        .setLabel("ENTER!")
-        .setStyle("PRIMARY"), check_name_button_1.checkPointsMessageButton);
+    const submitRow = new discord_js_1.MessageActionRow().addComponents((0, enter_prediction_buton_1.enterMessageButton)(predictionId), check_name_button_1.checkPointsMessageButton);
     return {
         content: "Prediction Open!!",
         embeds: [predictionEmbed],

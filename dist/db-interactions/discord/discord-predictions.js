@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.finishPredictionAndRedeemWinners = exports.addNewPredictionInGuildByCreator = void 0;
+exports.closePredictionToNewEntries = exports.finishPredictionAndRedeemWinners = exports.addNewPredictionInGuildByCreator = void 0;
 const db_predictions_1 = require("../predictions/db-predictions");
 const discord_transactions_1 = require("./discord-transactions");
 const addNewPredictionInGuildByCreator = async (discordPredictionId, guildId, creatorId, outcome_1, outcome_2) => {
@@ -28,3 +28,14 @@ const finishPredictionAndRedeemWinners = async (predictionId, decided_outcome) =
     }
 };
 exports.finishPredictionAndRedeemWinners = finishPredictionAndRedeemWinners;
+const closePredictionToNewEntries = async (predictionId) => {
+    try {
+        const predictionToClose = await (0, db_predictions_1.updatePredictionToClosed)(predictionId);
+        return predictionToClose;
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+};
+exports.closePredictionToNewEntries = closePredictionToNewEntries;

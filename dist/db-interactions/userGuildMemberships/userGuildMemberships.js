@@ -17,7 +17,6 @@ const findUserGuildMembership = async (userId, guildId) => {
     const userGuildMembership = await prisma.userGuildMemberships.findUnique({
         where: { userId_guildId: { userId, guildId } },
     });
-    console.log(userGuildMembership);
     return userGuildMembership;
 };
 exports.findUserGuildMembership = findUserGuildMembership;

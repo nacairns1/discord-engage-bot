@@ -78,6 +78,7 @@ const generateData = async () => {
             outcome_2,
             timeEnded,
             active,
+            isOpen: false,
             decided_outcome: d_outcome,
         });
     }

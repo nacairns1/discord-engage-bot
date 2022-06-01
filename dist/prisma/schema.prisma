@@ -38,6 +38,7 @@ model Predictions {
   outcome_1         String
   outcome_2         String
   active            Boolean?            @default(dbgenerated("'FALSE'"))
+  isOpen            Boolean             @default(false)
   decided_outcome   String?
   timeCreated       String
   timeEnded         String?

@@ -1,4 +1,4 @@
-import { addNewPrediction } from "../predictions/db-predictions";
+import { addNewPrediction, updatePredictionToClosed } from "../predictions/db-predictions";
 import { cashOutPlayers } from "./discord-transactions";
 
 export const addNewPredictionInGuildByCreator = async (
@@ -40,5 +40,17 @@ export const finishPredictionAndRedeemWinners = async (
 		return null;
 	}
 };
+
+export const closePredictionToNewEntries = async (
+	predictionId: string
+) => {
+	try {
+		const predictionToClose = await updatePredictionToClosed(predictionId);
+		return predictionToClose;
+	} catch(e) {
+		console.error(e);
+		return null;
+	}
+}
 
 

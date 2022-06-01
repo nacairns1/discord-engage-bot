@@ -39,6 +39,7 @@ export const addNewPrediction = async (
 			outcome_1,
 			outcome_2,
 			active,
+			isOpen: true,
 			decided_outcome,
 			timeCreated,
 		},
@@ -54,11 +55,28 @@ export const finishPrediction = async (
 	const predictionSearch = await findPredictionById(predictionId);
 	if (predictionSearch === null || !predictionSearch.active) {
 		console.log("Not active prediction found. returning....");
-		return;
+		return null;
 	}
 	const updatePrediction = await prisma.predictions.update({
 		where: { predictionId },
 		data: { decided_outcome, active: false, timeEnded: dayjs().toISOString() },
 	});
     console.log(updatePrediction);
+	return updatePrediction;
 };
+
+export const updatePredictionToClosed = async (predictionId: string) => {
+	const prediction = await findPredictionById(predictionId);
+	if (prediction === null ) {
+		console.log('null prediction found. returning null')
+		return null;
+	}
+	if (!prediction.active) {
+		console.log('inactive prediction found. Cannot change the open or closed status of a prediction past its initial time. Returning...')
+		return null;
+	}
+
+	const updatePredictionToClosed = await prisma.predictions.update({where: {predictionId}, data: {isOpen: false}});
+	return updatePredictionToClosed;
+
+}

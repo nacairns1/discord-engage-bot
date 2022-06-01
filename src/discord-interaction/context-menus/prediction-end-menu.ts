@@ -1,3 +1,4 @@
+import { PredictionEntries } from "@prisma/client";
 import { MessageSelectMenu, SelectMenuInteraction } from "discord.js";
 import { cashOutPlayers } from "../../db-interactions/discord/discord-transactions";
 
@@ -25,10 +26,19 @@ export const predictionEndMenuFunc = (outcome_1: string, outcome_2: string) => n
 		console.log( `ending prediction pid: ${pid}`);
 		const decided_outcome = interaction.values[0];
 		
+		let finalScores: {
+			totalSum: number;
+			winnerSum: number;
+			topWinner: PredictionEntries | undefined;
+		} | null | undefined
 		try {
 
-			const finalScores = await cashOutPlayers(pid, decided_outcome);
-			await interaction.reply(`${decided_outcome} won! Distributing ${finalScores?.totalSum} to the winners...`);
+			finalScores = await cashOutPlayers(pid, decided_outcome);
+			if (finalScores === undefined) {
+				await interaction.reply(`Error ending the prediction. Check the list of active predictions to see a list of predictions available`);
+				return;
+			}
+			await interaction.reply(`${finalScores?.topWinner?.decided_outcome} won! Distributing ${finalScores?.totalSum} to the winners...`);
 			return;
 		} catch (e)  {
 			await interaction.reply({content: 'Error when ending the prediction. Please try again.' , ephemeral: true});
