@@ -31,14 +31,14 @@ export const predictionEnterMenuFunc = (pid: string, outcome_1: string, outcome_
 
 		console.log( `opening prediction popup ${pid} for user ${interaction.user.id} in guild ${interaction.guildId}`);
 		
-        const modal = predictionEntryModalGenerator(pid, predicted_outcome);
+        const modal = predictionEntryModalGenerator(predicted_outcome);
         interaction.showModal(modal);
 
 		try {
             
 		
 		} catch (e)  {
-			await interaction.reply({content: 'Error when entering the prediction. Please try again.' , ephemeral: true});
+			await interaction.reply({content: 'Error when entering the prediction. Please try again. Make sure you input a number and a valid predicted outcome!' , ephemeral: true});
 		}
 
 

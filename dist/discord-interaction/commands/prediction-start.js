@@ -38,10 +38,18 @@ const predictionStart = {
             outcome_2 === null ||
             time_open === null)
             return;
+        if (outcome_1.trim() === outcome_2.trim()) {
+            await interaction.followUp({ content: 'The two options cannot be the same!', ephemeral: true });
+            return;
+        }
+        if (outcome_1.length > 15 || outcome_2.length > 15) {
+            await interaction.followUp({ content: 'Your prediction options are too long. Please try again.', ephemeral: true });
+            return;
+        }
         try {
             const userCheck = await (0, userGuildMemberships_1.findUserGuildMembership)(user.id, interaction.guildId);
             if (userCheck === null || !userCheck.admin) {
-                await user.send("You do not have permission to start a prediction in this server.");
+                await interaction.followUp({ content: "You do not have permission to start a prediction in this server.", ephemeral: true });
                 return;
             }
         }

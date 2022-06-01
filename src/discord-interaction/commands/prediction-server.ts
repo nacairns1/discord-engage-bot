@@ -11,6 +11,7 @@ import { updateUserAdminPrivelege } from "../../db-interactions/userGuildMembers
 import {
 	joinRowInMessage,
 } from "../action-rows/join-action-row";
+import { helpEmbed } from "../embeds/help-embed";
 import Command from "./CommandInterface";
 
 // initializes the guild in the prediction db. Necessary for other functionality.
@@ -34,8 +35,6 @@ const predictionServer: Command = {
 				)
 		),
 	async execute(interaction: CommandInteraction) {
-		const subcommand = interaction.options.getSubcommand();
-		const optIn = interaction.options.getBoolean("guild");
 		const initChannel = interaction.options.getChannel("init-channel");
 
 		if (interaction.guild?.id === null || interaction.guild?.id === undefined)
@@ -47,7 +46,8 @@ const predictionServer: Command = {
 
 		if (initChannel !== null) {
 			const initialContent: MessageOptions = {
-				content: `Welcome to Predictions Points! This bot gives points to the users on the server based on activity and can be used to create predictions. \n This bot tracks minimal user data in order to allocate points based on activity. In order to opt in and get some starter points, click the button below or type \`/prediction-user-init\``,
+				content: `Welcome to Predictions Points! `,
+				embeds: [helpEmbed],
 				components: [joinRowInMessage],
 			};
 			const initChannelid = initChannel.id;

@@ -23,7 +23,7 @@ exports.closedMessageButton = new discord_js_1.MessageButton()
 const enterUserOnButtonClicked = async (interaction) => {
     await interaction.deferReply({ ephemeral: true });
     console.log('seeing interaction');
-    const userId = interaction.user.id;
+    console.log(interaction);
     const guildId = interaction.guildId;
     const pid = interaction.customId.split(' ')[1];
     if (guildId === null) {

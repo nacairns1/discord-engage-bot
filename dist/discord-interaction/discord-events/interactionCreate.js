@@ -10,6 +10,7 @@ const prediction_enter_modals_1 = require("../modals/prediction-enter-modals");
 const interactionCreate = {
     name: "interactionCreate",
     async execute(interaction) {
+        console.log(interaction);
         if (interaction.isButton()) {
             const button = interaction;
             const buttonId = button.customId;
@@ -20,9 +21,6 @@ const interactionCreate = {
             if (buttonId.includes('user-enter'))
                 await (0, enter_prediction_buton_1.enterUserOnButtonClicked)(button);
             return;
-        }
-        if (interaction.isModalSubmit()) {
-            // TO DO IMPLEMENT MODAL ROUTES
         }
         if (interaction.isSelectMenu()) {
             const msm = interaction;

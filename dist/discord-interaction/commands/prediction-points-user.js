@@ -20,8 +20,7 @@ const predictionPointsUser = {
         if (guildId === undefined)
             return;
         try {
-            await interaction.reply('working...');
-            await interaction.deleteReply();
+            await interaction.deferReply({ ephemeral: true });
             const points = await (0, userGuildMemberships_1.findUserGuildMembership)(user.id, guildId);
             if (points === null)
                 throw Error('No user found');

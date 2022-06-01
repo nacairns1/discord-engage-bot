@@ -16,6 +16,7 @@ exports.joinMessageButton = new discord_js_1.MessageButton()
 const addUserOnButtonClicked = async (interaction) => {
     const user = interaction.user;
     const guild = interaction.guild;
+    console.log(interaction);
     if (guild === null)
         return;
     try {

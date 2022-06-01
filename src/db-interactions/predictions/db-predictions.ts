@@ -8,6 +8,11 @@ export const getAllPredictions = async (): Promise<Predictions[] | null> => {
 	return predictions;
 };
 
+export const getAllActivePredictions = async (guildId:string) => {
+	const predictions = await prisma.predictions.findMany({where: {guildId, active: true}});
+	return predictions;
+}
+
 export const findPredictionById = async (predictionId: string) => {
 	const prediction = await prisma.predictions.findUnique({
 		where: { predictionId },

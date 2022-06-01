@@ -21,6 +21,7 @@ import {
 import { findGuildUsersInPrediction } from "../../db-interactions/prediction-entries/db-prediction-entries";
 import messageCreate from "../discord-events/messageCreate";
 import { closedMessageButton, enterButton, enterMessageButton } from "../buttons/enter-prediction-buton";
+import { IntegrationExpireBehavior } from "discord-api-types/v10";
 
 // starts a new prediction
 
@@ -54,8 +55,10 @@ const predictionStart: Command = {
 	async execute(interaction: CommandInteraction) {
 		await interaction.deferReply();
 
+
 		const predictionId = interaction.id;
 		const user = interaction.user;
+
 		const outcome_1 = interaction.options.getString("outcome_1");
 		const outcome_2 = interaction.options.getString("outcome_2");
 		let time_open = interaction.options.getInteger("time_open");
@@ -67,14 +70,24 @@ const predictionStart: Command = {
 			time_open === null
 		)
 			return;
+		
+		if (outcome_1.trim() === outcome_2.trim()){
+			await interaction.followUp({content: 'The two options cannot be the same!', ephemeral: true});
+			return;
+		}
+		if (outcome_1.length >15 ||  outcome_2.length > 15){
+			await interaction.followUp({content: 'Your prediction options are too long. Please try again.', ephemeral: true});
+			return;
+		}
+
 		try {
 			const userCheck = await findUserGuildMembership(
 				user.id,
 				interaction.guildId
 			);
 			if (userCheck === null || !userCheck.admin) {
-				await user.send(
-					"You do not have permission to start a prediction in this server."
+				await interaction.followUp({ content: 
+					"You do not have permission to start a prediction in this server.", ephemeral: true}
 				);
 				return;
 			}

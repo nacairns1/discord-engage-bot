@@ -19,6 +19,7 @@ export const addUserOnButtonClicked = async (
 	const user = interaction.user;
 	const guild = interaction.guild;
 
+	console.log(interaction);
 	if (guild === null) return;
 	try {
 		const newUser = await addNewDiscordUserInGuild(

@@ -9,13 +9,13 @@ const dayjs_1 = __importDefault(require("dayjs"));
 const prisma = new client_1.PrismaClient();
 const findAllUsers = async () => {
     const users = await prisma.users.findMany();
-    console.log(users);
+    // console.log(users);
     return users;
 };
 exports.findAllUsers = findAllUsers;
 const findUser = async (userId) => {
     const user = await prisma.users.findUnique({ where: { userId } });
-    console.log(user);
+    // console.log(user);
     return user;
 };
 exports.findUser = findUser;

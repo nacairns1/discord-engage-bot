@@ -21,8 +21,7 @@ const predictionPointsUser: Command = {
 		if (guildId === undefined) return;
 
 		try {
-			await interaction.reply('working...');
-			await interaction.deleteReply();
+			await interaction.deferReply({ephemeral: true});
 			const points = await findUserGuildMembership(user.id, guildId)
 			if (points === null) throw Error('No user found')
 			await interaction.followUp({content: `Here's your <@${user.id}> information in ${interaction.guild?.name}

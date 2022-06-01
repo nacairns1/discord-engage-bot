@@ -17,27 +17,50 @@ const predictionEndMenuFunc = (outcome_1, outcome_2) => new discord_js_1.Message
         description: "Select this to end the prediction",
         value: "outcome_2",
     },
+    {
+        label: `REFUND`,
+        description: "Select this value to refund the prediction",
+        value: "REFUND",
+    },
 ]);
 exports.predictionEndMenuFunc = predictionEndMenuFunc;
 const predictionEndMenuController = async (interaction) => {
-    var _a;
+    await interaction.deferReply();
     const rawContent = interaction.message.content;
-    const splitContent = rawContent.split(' ');
+    const splitContent = rawContent.split(" ");
     const pid = splitContent[splitContent.length - 1];
-    console.log(`ending prediction pid: ${pid}`);
     const decided_outcome = interaction.values[0];
+    console.log(`ending prediction pid: ${pid} outcome: ${decided_outcome}`);
     let finalScores;
     try {
-        finalScores = await (0, discord_transactions_1.cashOutPlayers)(pid, decided_outcome);
-        if (finalScores === undefined) {
-            await interaction.reply(`Error ending the prediction. Check the list of active predictions to see a list of predictions available`);
+        if (decided_outcome === "REFUND") {
+            await (0, discord_transactions_1.refundDiscordPrediction)(pid);
+            await interaction.followUp({
+                content: "Refund successful.",
+                ephemeral: true,
+            });
             return;
         }
-        await interaction.reply(`${(_a = finalScores === null || finalScores === void 0 ? void 0 : finalScores.topWinner) === null || _a === void 0 ? void 0 : _a.decided_outcome} won! Distributing ${finalScores === null || finalScores === void 0 ? void 0 : finalScores.totalSum} to the winners...`);
+        finalScores = await (0, discord_transactions_1.cashOutPlayers)(pid, decided_outcome);
+        if (finalScores === undefined) {
+            await interaction.followUp({
+                content: `Error ending the prediction.`,
+                ephemeral: true,
+            });
+            return;
+        }
+        if (finalScores === null) {
+            await interaction.followUp({ content: `Prediction has already ended.`, ephemeral: true });
+            return;
+        }
+        await interaction.followUp(`${decided_outcome} won! Distributing ${finalScores === null || finalScores === void 0 ? void 0 : finalScores.totalSum} to the winners...`);
         return;
     }
     catch (e) {
-        await interaction.reply({ content: 'Error when ending the prediction. Please try again.', ephemeral: true });
+        await interaction.followUp({
+            content: "Error when ending the prediction. Please try again.",
+            ephemeral: true,
+        });
     }
 };
 exports.predictionEndMenuController = predictionEndMenuController;

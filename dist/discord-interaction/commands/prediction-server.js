@@ -6,6 +6,7 @@ const discord_guilds_1 = require("../../db-interactions/discord/discord-guilds")
 const discord_users_1 = require("../../db-interactions/discord/discord-users");
 const userGuildMemberships_1 = require("../../db-interactions/userGuildMemberships/userGuildMemberships");
 const join_action_row_1 = require("../action-rows/join-action-row");
+const help_embed_1 = require("../embeds/help-embed");
 // initializes the guild in the prediction db. Necessary for other functionality.
 // if given a channel, sends an initial message with a button to begin tracking as well as gain points.
 // these values will be manual right now but can be refactored later and added to the db as default values and thus customizable.
@@ -23,8 +24,6 @@ const predictionServer = {
         .setRequired(true))),
     async execute(interaction) {
         var _a, _b;
-        const subcommand = interaction.options.getSubcommand();
-        const optIn = interaction.options.getBoolean("guild");
         const initChannel = interaction.options.getChannel("init-channel");
         if (((_a = interaction.guild) === null || _a === void 0 ? void 0 : _a.id) === null || ((_b = interaction.guild) === null || _b === void 0 ? void 0 : _b.id) === undefined)
             return;
@@ -33,7 +32,8 @@ const predictionServer = {
         await interaction.deleteReply();
         if (initChannel !== null) {
             const initialContent = {
-                content: `Welcome to Predictions Points! This bot gives points to the users on the server based on activity and can be used to create predictions. \n This bot tracks minimal user data in order to allocate points based on activity. In order to opt in and get some starter points, click the button below or type \`/prediction-user-init\``,
+                content: `Welcome to Predictions Points! `,
+                embeds: [help_embed_1.helpEmbed],
                 components: [join_action_row_1.joinRowInMessage],
             };
             const initChannelid = initChannel.id;

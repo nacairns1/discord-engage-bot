@@ -34,7 +34,7 @@ const db_guilds_1 = require("../../db-interactions/guilds/db-guilds");
 const config_json_2 = require("../../config.json");
 const addCommandsToGuild = async (guildId) => {
     const commandPath = path.resolve(__dirname, '../commands');
-    const commands = new Array;
+    const commands = [];
     const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js') && !file.includes('Interface'));
     commandFiles.map(file => {
         const individualPath = path.resolve(commandPath, `./${file}`);

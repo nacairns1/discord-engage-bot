@@ -17,20 +17,23 @@ const predictionUserInit: Command = {
 		if (guildName === undefined || interaction.guild?.id === undefined) return;
 
 		try {
+			await interaction.deferReply({ ephemeral: true });
 			const userNew = await addNewDiscordUserInGuild(
 				user.id,
 				interaction.guild?.id,
 				500,
 				false
 			);
-			await interaction.reply("working...");
-			await interaction.deleteReply();
-			if (userNew === null) return null;
-			await user.send(
-				`Successfully added ${user.username} to prediction points for server: ${guildName} You've earned 500 points to start!`
-			);
+
+			if (userNew === null) {
+				await interaction.followUp({content: 'You\'re already a member!', ephemeral: true})
+			}
+			await interaction.followUp({
+				content: `Successfully added ${user.username} to prediction points for server: ${guildName} You've earned 500 points to start!`,
+				ephemeral: true,
+			});
 		} catch (e) {
-			await user.send(`Error when adding your user data. 
+			await interaction.followUp(`Error when adding your user data. 
 			
 Has your guild been added yet? A server manager needs to call \`/prediction-server initialize\` first`);
 			console.error(e);

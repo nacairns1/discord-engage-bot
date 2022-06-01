@@ -39,7 +39,7 @@ exports.client = new tsClient({
         discord_js_1.Intents.FLAGS.GUILD_MESSAGES,
         discord_js_1.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
         discord_js_1.Intents.FLAGS.GUILD_VOICE_STATES,
-        discord_js_1.Intents.FLAGS.DIRECT_MESSAGES
+        discord_js_1.Intents.FLAGS.DIRECT_MESSAGES,
     ],
 });
 exports.client.commands = new discord_js_1.Collection();

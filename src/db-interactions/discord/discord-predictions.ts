@@ -1,4 +1,8 @@
-import { addNewPrediction, updatePredictionToClosed } from "../predictions/db-predictions";
+import {
+	addNewPrediction,
+	getAllActivePredictions,
+	updatePredictionToClosed,
+} from "../predictions/db-predictions";
 import { cashOutPlayers } from "./discord-transactions";
 
 export const addNewPredictionInGuildByCreator = async (
@@ -33,24 +37,33 @@ export const finishPredictionAndRedeemWinners = async (
 ) => {
 	try {
 		const finishedPrediction = cashOutPlayers(predictionId, decided_outcome);
-        console.log(`finished prediction and redeemed player points.`);
-        return finishedPrediction;
+		console.log(`finished prediction and redeemed player points.`);
+		return finishedPrediction;
 	} catch (e) {
 		console.error(e);
 		return null;
 	}
 };
 
-export const closePredictionToNewEntries = async (
-	predictionId: string
-) => {
+export const closePredictionToNewEntries = async (predictionId: string) => {
 	try {
 		const predictionToClose = await updatePredictionToClosed(predictionId);
 		return predictionToClose;
-	} catch(e) {
+	} catch (e) {
 		console.error(e);
 		return null;
 	}
-}
+};
 
-
+export const getAllActivePredictionsInGuildId = async (
+	guildId: string
+) => {
+	try {
+		const predictions = await getAllActivePredictions(guildId);
+		return predictions;
+	
+	} catch (e) {
+		console.error(e)
+		return null;
+	}
+};

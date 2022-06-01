@@ -12,7 +12,7 @@ const interactionCreate:Event = {
 	name: "interactionCreate",
 	async execute(interaction:Interaction) {
 
-
+		console.log(interaction);
 		if (interaction.isButton()) {
 			const button:ButtonInteraction = interaction;
 			const buttonId = button.customId;
@@ -20,12 +20,6 @@ const interactionCreate:Event = {
 			if (buttonId === 'user-check') await checkPointsMessageButtonController(button);
 			if (buttonId.includes('user-enter')) await enterUserOnButtonClicked(button);
 			return;
-		}
-
-		if (interaction.isModalSubmit()) {
-			 
-			// TO DO IMPLEMENT MODAL ROUTES
-
 		}
 
 		if(interaction.isSelectMenu()) {

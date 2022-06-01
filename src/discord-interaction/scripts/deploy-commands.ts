@@ -15,7 +15,7 @@ import { clientId } from '../../config.json';
 export const addCommandsToGuild = async (guildId: string) => {
 
 	const commandPath = path.resolve(__dirname, '../commands');
-	const commands = new Array<RESTPostAPIApplicationCommandsJSONBody | APIApplicationCommandSubcommandOption>;
+	const commands: Array<RESTPostAPIApplicationCommandsJSONBody | APIApplicationCommandSubcommandOption> = [];
 	const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js') && !file.includes('Interface') );
 
 	commandFiles.map(file => {

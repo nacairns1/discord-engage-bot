@@ -33,7 +33,8 @@
     "discord-engage-bot": "file:../dist",
     "discord.js": "^13.7.0",
     "i": "^0.3.7",
-    "npm": "^8.11.0"
+    "npm": "^8.11.0",
+    "words-to-numbers": "^1.5.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.1.0",

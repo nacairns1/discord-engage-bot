@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePredictionToClosed = exports.finishPrediction = exports.addNewPrediction = exports.findPredictionById = exports.getAllPredictions = void 0;
+exports.updatePredictionToClosed = exports.finishPrediction = exports.addNewPrediction = exports.findPredictionById = exports.getAllActivePredictions = exports.getAllPredictions = void 0;
 const client_1 = require("@prisma/client");
 const dayjs_1 = __importDefault(require("dayjs"));
 const prisma = new client_1.PrismaClient();
@@ -12,6 +12,11 @@ const getAllPredictions = async () => {
     return predictions;
 };
 exports.getAllPredictions = getAllPredictions;
+const getAllActivePredictions = async (guildId) => {
+    const predictions = await prisma.predictions.findMany({ where: { guildId, active: true } });
+    return predictions;
+};
+exports.getAllActivePredictions = getAllActivePredictions;
 const findPredictionById = async (predictionId) => {
     const prediction = await prisma.predictions.findUnique({
         where: { predictionId },
