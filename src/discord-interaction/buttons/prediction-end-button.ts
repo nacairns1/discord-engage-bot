@@ -1,33 +1,31 @@
-import { ActionRowBuilder, SlashCommandBuilder } from "@discordjs/builders";
+import { ButtonStyle } from "discord-api-types/v10";
 import {
-	CommandInteraction,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	Interaction,
 	MessageActionRowComponentBuilder,
 } from "discord.js";
-import { cashOutPlayers } from "../../db-interactions/discord/discord-transactions";
-import { findGuildUsersInPrediction } from "../../db-interactions/prediction-entries/db-prediction-entries";
+import { addNewDiscordPredictionEntry } from "../../db-interactions/discord/discord-transactions";
+import { addNewDiscordUserInGuild } from "../../db-interactions/discord/discord-users";
+import { findPredictionByPredictionIdUserId } from "../../db-interactions/prediction-entries/db-prediction-entries";
 import { findPredictionById } from "../../db-interactions/predictions/db-predictions";
 import { findUserGuildMembership } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
-import { checkPointsMessageButton } from "../buttons/check-name-button";
 import { predictionEndMenuFunc } from "../context-menus/prediction-end-menu";
-import Command from "./CommandInterface";
-import predictionStart from "./prediction-start";
+import { predictionEnterMenuFunc } from "../context-menus/prediction-enter-menu";
+import { predictionEntryModalGenerator } from "../modals/prediction-enter-modals";
 
-// finishes a given prediction
 
-const predictionUserInit: Command = {
-	data: new SlashCommandBuilder()
-		.setName("prediction-finish")
-		.setDescription("Finish a prediction with a given ID")
-		.addStringOption((str) =>
-			str
-				.setName("predictionid")
-				.setRequired(true)
-				.setDescription("The necessary prediction ID")
-		),
-	async execute(interaction: CommandInteraction) {
-		try {
-			await interaction.deferReply({ ephemeral: true });
+export const endPredictionButton = new ButtonBuilder()
+		.setCustomId(`user-end`)
+		.setLabel("END PREDICTION!")
+		.setStyle(ButtonStyle.Primary);
 
+export const predictionEndOnButtonClicked = async (
+	interaction: ButtonInteraction
+) => {
+    await interaction.deferReply({ ephemeral: true });
+try {
 			const userId = interaction.user.id;
 			const guildId = interaction.guildId;
 			if (guildId === null) {
@@ -49,7 +47,10 @@ const predictionUserInit: Command = {
 				});
 			}
 
-			const predictionId = interaction.options.get("predictionid", true).value;
+            const rawContent = interaction.message.content;
+            const splitContent = rawContent.split(' ');
+            const predictionId = splitContent[splitContent.length - 1 ];
+            
 
 			if (typeof predictionId !== 'string') {
 				interaction.followUp({
@@ -67,8 +68,8 @@ const predictionUserInit: Command = {
 			
 			const selectMenu:MessageActionRowComponentBuilder = predictionEndMenuFunc(outcome_1, outcome_2);
 
-			const actionRow = new ActionRowBuilder<any>().addComponents(
-			selectMenu
+			const actionRow = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+			[selectMenu]
 			);
 
 			await interaction.followUp({
@@ -80,7 +81,7 @@ const predictionUserInit: Command = {
 			await interaction.followUp({content: "error ending predictions", ephemeral: true})
 			console.error(e);
 		}
-	},
-};
 
-export default predictionUserInit;
+
+
+};

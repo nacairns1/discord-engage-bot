@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.predictionEnterMenuController = exports.predictionEnterMenuFunc = void 0;
 const discord_js_1 = require("discord.js");
 const prediction_enter_modals_1 = require("../modals/prediction-enter-modals");
-const predictionEnterMenuFunc = (pid, outcome_1, outcome_2) => new discord_js_1.MessageSelectMenu()
+const predictionEnterMenuFunc = (pid, outcome_1, outcome_2) => new discord_js_1.SelectMenuBuilder()
     .setCustomId("prediction-enter")
     .setPlaceholder("SELECTING AN OPTION OPENS A PREDICTION INPUT")
     .addOptions([

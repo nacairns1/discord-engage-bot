@@ -3,20 +3,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addUserOnButtonClicked = exports.joinMessageButton = exports.joinButton = void 0;
 const builders_1 = require("@discordjs/builders");
 const v10_1 = require("discord-api-types/v10");
-const discord_js_1 = require("discord.js");
 const discord_users_1 = require("../../db-interactions/discord/discord-users");
 exports.joinButton = new builders_1.ButtonBuilder()
     .setCustomId("user-join")
     .setLabel("START POINTS!")
     .setStyle(v10_1.ButtonStyle.Primary);
-exports.joinMessageButton = new discord_js_1.MessageButton()
+exports.joinMessageButton = new builders_1.ButtonBuilder()
     .setCustomId("user-join")
     .setLabel("START POINTS!")
-    .setStyle("PRIMARY");
+    .setStyle(v10_1.ButtonStyle.Primary);
 const addUserOnButtonClicked = async (interaction) => {
     const user = interaction.user;
     const guild = interaction.guild;
-    console.log(interaction);
     if (guild === null)
         return;
     try {

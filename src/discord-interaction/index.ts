@@ -1,6 +1,6 @@
 import  * as fs from 'fs';
 
-import { Client, Intents, Collection,  ClientOptions } from "discord.js";
+import { Client,  Collection,  ClientOptions, GatewayIntentBits } from "discord.js";
 import { token } from '../config.json';
 import * as path from 'path';
 import Command from './commands/CommandInterface';
@@ -16,11 +16,13 @@ class tsClient extends Client {
 
 export const client = new tsClient({
 	intents: [
-		Intents.FLAGS.GUILDS,
-		Intents.FLAGS.GUILD_MESSAGES,
-		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-		Intents.FLAGS.GUILD_VOICE_STATES,
-		Intents.FLAGS.DIRECT_MESSAGES,
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.MessageContent
 	],
 	
 });

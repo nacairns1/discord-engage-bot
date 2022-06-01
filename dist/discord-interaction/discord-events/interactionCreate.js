@@ -7,10 +7,10 @@ const prediction_end_menu_1 = require("../context-menus/prediction-end-menu");
 const enter_prediction_buton_1 = require("../buttons/enter-prediction-buton");
 const prediction_enter_menu_1 = require("../context-menus/prediction-enter-menu");
 const prediction_enter_modals_1 = require("../modals/prediction-enter-modals");
+const prediction_end_button_1 = require("../buttons/prediction-end-button");
 const interactionCreate = {
     name: "interactionCreate",
     async execute(interaction) {
-        console.log(interaction);
         if (interaction.isButton()) {
             const button = interaction;
             const buttonId = button.customId;
@@ -20,6 +20,8 @@ const interactionCreate = {
                 await (0, check_name_button_1.checkPointsMessageButtonController)(button);
             if (buttonId.includes('user-enter'))
                 await (0, enter_prediction_buton_1.enterUserOnButtonClicked)(button);
+            if (buttonId === 'user-end')
+                await (0, prediction_end_button_1.predictionEndOnButtonClicked)(button);
             return;
         }
         if (interaction.isSelectMenu()) {

@@ -8,11 +8,16 @@ const discord_predictions_1 = require("../../db-interactions/discord/discord-pre
 const db_predictions_1 = require("../../db-interactions/predictions/db-predictions");
 const db_prediction_entries_1 = require("../../db-interactions/prediction-entries/db-prediction-entries");
 const enter_prediction_buton_1 = require("../buttons/enter-prediction-buton");
+const prediction_end_button_1 = require("../buttons/prediction-end-button");
 // starts a new prediction
 const predictionStart = {
     data: new builders_1.SlashCommandBuilder()
         .setName("prediction-start")
         .setDescription("Creates a new active Prediction")
+        .addStringOption((option) => option
+        .setName("title")
+        .setDescription("The title of the prediction")
+        .setRequired(true))
         .addStringOption((option) => option
         .setName("outcome_1")
         .setDescription("The first of two possible outcomes")
@@ -30,26 +35,46 @@ const predictionStart = {
         await interaction.deferReply();
         const predictionId = interaction.id;
         const user = interaction.user;
-        const outcome_1 = interaction.options.getString("outcome_1");
-        const outcome_2 = interaction.options.getString("outcome_2");
-        let time_open = interaction.options.getInteger("time_open");
+        const outcome_1 = interaction.options.get("outcome_1", true).value;
+        const outcome_2 = interaction.options.get("outcome_2", true).value;
+        let title = interaction.options.get("title", true).value;
+        let time_open = interaction.options.get("time_open", true).value;
+        if (!(typeof outcome_1 === "string" && typeof outcome_2 === "string")) {
+            return null;
+        }
+        if (!(typeof time_open === "number")) {
+            return null;
+        }
+        if (!(typeof title === 'string')) {
+            return null;
+        }
         if (interaction.guildId === null ||
             outcome_1 === null ||
             outcome_2 === null ||
-            time_open === null)
+            time_open === null ||
+            title === null)
             return;
         if (outcome_1.trim() === outcome_2.trim()) {
-            await interaction.followUp({ content: 'The two options cannot be the same!', ephemeral: true });
+            await interaction.followUp({
+                content: "The two options cannot be the same!",
+                ephemeral: true,
+            });
             return;
         }
         if (outcome_1.length > 15 || outcome_2.length > 15) {
-            await interaction.followUp({ content: 'Your prediction options are too long. Please try again.', ephemeral: true });
+            await interaction.followUp({
+                content: "Your prediction options are too long. Please try again.",
+                ephemeral: true,
+            });
             return;
         }
         try {
             const userCheck = await (0, userGuildMemberships_1.findUserGuildMembership)(user.id, interaction.guildId);
             if (userCheck === null || !userCheck.admin) {
-                await interaction.followUp({ content: "You do not have permission to start a prediction in this server.", ephemeral: true });
+                await interaction.followUp({
+                    content: "You do not have permission to start a prediction in this server.",
+                    ephemeral: true,
+                });
                 return;
             }
         }
@@ -68,7 +93,7 @@ const predictionStart = {
             return new Promise((resolve) => setTimeout(resolve, ms));
         }
         while (time_open > 0) {
-            const message = await embedPredictionBuilder(predictionId, interaction.guildId, time_open);
+            const message = await embedPredictionBuilder(title, predictionId, interaction.guildId, time_open);
             if (message.components === undefined || message.embeds === undefined)
                 return;
             await interaction.editReply({
@@ -79,11 +104,13 @@ const predictionStart = {
             await timeout(1000);
             time_open--;
         }
-        const finalMessage = await embedPredictionBuilder(predictionId, interaction.guildId, time_open);
+        const finalMessage = await embedPredictionBuilder(title, predictionId, interaction.guildId, time_open);
         await interaction.editReply({
-            content: "Prediction Closed!",
+            content: `Prediction Closed! pid: ${predictionId}`,
             embeds: finalMessage.embeds,
-            components: [new discord_js_1.MessageActionRow().addComponents(enter_prediction_buton_1.closedMessageButton, check_name_button_1.checkPointsMessageButton)]
+            components: [
+                new builders_1.ActionRowBuilder().addComponents(enter_prediction_buton_1.closedMessageButton, check_name_button_1.checkPointsMessageButton, prediction_end_button_1.endPredictionButton),
+            ],
         });
         const update = await (0, db_predictions_1.updatePredictionToClosed)(predictionId);
         if (update === null) {
@@ -96,7 +123,7 @@ const predictionStart = {
         console.log(`prediction ${predictionId} closed successfully!`);
     },
 };
-const embedPredictionBuilder = async (predictionId, guildId, time) => {
+const embedPredictionBuilder = async (title, predictionId, guildId, time) => {
     let o_1_points = 0;
     let o_2_points = 0;
     let o_2_players = 0;
@@ -106,7 +133,7 @@ const embedPredictionBuilder = async (predictionId, guildId, time) => {
     if (p === null)
         return { content: "No prediction found..." };
     let o_1_playerMax = 0;
-    let o_1_playerMaxName;
+    let o_1_playerMaxName = "No entries yet!";
     let o_2_playerMax = 0;
     let o_2_playerMaxName;
     if (gm === null) {
@@ -122,7 +149,7 @@ const embedPredictionBuilder = async (predictionId, guildId, time) => {
                 o_1_points += pe.wageredPoints;
                 if (pe.wageredPoints > o_1_playerMax) {
                     o_1_playerMax = pe.wageredPoints;
-                    o_1_playerMaxName = pe.userId;
+                    o_1_playerMaxName = `<@${pe.userId}>`;
                 }
             }
             else if (pe.predicted_outcome === p.outcome_2) {
@@ -130,36 +157,41 @@ const embedPredictionBuilder = async (predictionId, guildId, time) => {
                 o_2_points += pe.wageredPoints;
                 if (pe.wageredPoints > o_2_playerMax) {
                     o_2_playerMax = pe.wageredPoints;
-                    o_2_playerMaxName = pe.userId;
+                    o_2_playerMaxName = `<@${pe.userId}>`;
                 }
             }
         });
     }
-    const predictionEmbed = new discord_js_1.MessageEmbed()
-        .setTitle(`Prediction Started! `)
+    const predictionEmbed = new discord_js_1.EmbedBuilder()
+        .setTitle(`${title}`)
         .setDescription(`Choose between: **${p.outcome_1}** __OR__  **${p.outcome_2}**`)
-        .addFields({
-        name: `PredictionID: `,
-        value: `${p.predictionId}`,
-        inline: false,
-    }, {
-        name: `${p.outcome_1}`,
-        value: `Points wagered: ${o_1_points} \n Highest Bet: ----- \n #Players: ${o_1_players} Players`,
-        inline: true,
-    }, {
-        name: `${p.outcome_2}`,
-        value: `Points wagered: ${o_2_points} \n Highest Bet: ----- \n #Players: ${o_2_points} Players`,
-        inline: true,
-    }, {
-        name: `${time}`,
-        value: "Seconds remaining...",
-        inline: false,
-    })
+        .addFields([
+        {
+            name: `PredictionID: `,
+            value: `${p.predictionId}`,
+            inline: false,
+        },
+        {
+            name: `${p.outcome_1}`,
+            value: `Points wagered: ${o_1_points} \n Highest Bet: ${o_1_playerMaxName}- ${o_1_playerMax === undefined ? 0 : o_1_playerMax} \n #Players: ${o_1_players} Players`,
+            inline: true,
+        },
+        {
+            name: `${p.outcome_2}`,
+            value: `Points wagered: ${o_2_points} \n Highest Bet: ${o_2_playerMaxName} - ${o_2_playerMax} \n #Players: ${o_2_players} Players`,
+            inline: true,
+        },
+        {
+            name: `${time}`,
+            value: "Seconds remaining...",
+            inline: false,
+        },
+    ])
         .setTimestamp()
         .setFooter({
         text: "Prediction Bot",
     });
-    const submitRow = new discord_js_1.MessageActionRow().addComponents((0, enter_prediction_buton_1.enterMessageButton)(predictionId), check_name_button_1.checkPointsMessageButton);
+    const submitRow = new builders_1.ActionRowBuilder().addComponents((0, enter_prediction_buton_1.enterMessageButton)(predictionId), check_name_button_1.checkPointsMessageButton);
     return {
         content: "Prediction Open!!",
         embeds: [predictionEmbed],

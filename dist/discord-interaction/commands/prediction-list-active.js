@@ -22,7 +22,7 @@ const listEmbedBuilder = (lp) => {
             value: `${outcome_1} OR ${outcome_2} \n Still Open? ${isOpen}`,
         });
     }
-    return new discord_js_1.MessageEmbed()
+    return new discord_js_1.EmbedBuilder()
         .setAuthor(author)
         .setDescription("Active Predictions")
         .setFields([...fields])

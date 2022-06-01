@@ -1,24 +1,24 @@
 import { PredictionEntries } from "@prisma/client";
-import { MessageSelectMenu, SelectMenuInteraction } from "discord.js";
+import { SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
 import {
 	cashOutPlayers,
 	refundDiscordPrediction,
 } from "../../db-interactions/discord/discord-transactions";
 
 export const predictionEndMenuFunc = (outcome_1: string, outcome_2: string) =>
-	new MessageSelectMenu()
+	new SelectMenuBuilder()
 		.setCustomId("prediction-end")
 		.setPlaceholder("SELECTING AN OPTION ENDS THE PREDICTION")
 		.addOptions([
 			{
 				label: `${outcome_1}`,
 				description: "Select this to end the prediction",
-				value: "outcome_1",
+				value: `${outcome_1}`,
 			},
 			{
 				label: `${outcome_2}`,
 				description: "Select this to end the prediction",
-				value: "outcome_2",
+				value: `${outcome_2}`,
 			},
 			{
 				label: `REFUND`,
@@ -70,7 +70,7 @@ export const predictionEndMenuController = async (
 			return;
 		}
 		await interaction.followUp(
-			`${decided_outcome} won! Distributing ${finalScores?.totalSum} to the winners...`
+			`${decided_outcome} won! They won a total of ${finalScores?.totalSum} points!`
 		);
 		return;
 	} catch (e) {

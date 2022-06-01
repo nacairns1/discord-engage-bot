@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.helpEmbed = void 0;
-const discord_js_1 = require("discord.js");
-exports.helpEmbed = new discord_js_1.MessageEmbed()
+const builders_1 = require("@discordjs/builders");
+exports.helpEmbed = new builders_1.EmbedBuilder()
     .setAuthor({
     name: "PredictionBot",
     url: "https://github.com/nacairns1/discord-engage-bot",

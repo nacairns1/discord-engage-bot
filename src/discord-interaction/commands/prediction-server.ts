@@ -35,9 +35,9 @@ const predictionServer: Command = {
 				)
 		),
 	async execute(interaction: CommandInteraction) {
-		const initChannel = interaction.options.getChannel("init-channel");
+		const initChannel = interaction.options.get("init-channel", true).channel;
 
-		if (interaction.guild?.id === null || interaction.guild?.id === undefined)
+		if (interaction.guild?.id === null || interaction.guild?.id === undefined || initChannel === undefined)
 			return;
 
 		await interaction.reply({ content: "adding server....", fetchReply: true });
@@ -59,7 +59,7 @@ const predictionServer: Command = {
 			};
 
 			const channel = interaction.client.channels.cache.get(initChannelid);
-			if (channel?.type === "GUILD_TEXT") {
+			if (channel?.type === ChannelType.GuildText) {
 				channel.send(initialContent);
 			}
 		}

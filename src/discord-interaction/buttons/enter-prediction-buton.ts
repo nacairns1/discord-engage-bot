@@ -1,6 +1,6 @@
-import { ButtonBuilder } from "@discordjs/builders";
+
 import { ButtonStyle } from "discord-api-types/v10";
-import { ButtonInteraction, Interaction, MessageActionRow, MessageButton, Modal } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, Interaction, MessageActionRowComponentBuilder } from "discord.js";
 import { addNewDiscordPredictionEntry } from "../../db-interactions/discord/discord-transactions";
 import { addNewDiscordUserInGuild } from "../../db-interactions/discord/discord-users";
 import { findPredictionByPredictionIdUserId } from "../../db-interactions/prediction-entries/db-prediction-entries";
@@ -13,15 +13,15 @@ export const enterButton = new ButtonBuilder()
 	.setLabel("START POINTS!")
 	.setStyle(ButtonStyle.Primary);
 
-export const enterMessageButton = (pid: string)=>new MessageButton()
+export const enterMessageButton = (pid: string)=>new ButtonBuilder()
 	.setCustomId(`user-enter ${pid}`)
 	.setLabel("ENTER!")
-	.setStyle("PRIMARY");
+	.setStyle(ButtonStyle.Primary);
 
-export const closedMessageButton = new MessageButton()
+export const closedMessageButton = new ButtonBuilder()
 	.setCustomId("user-closed")
 	.setLabel("CLOSED!")
-	.setStyle("DANGER")
+	.setStyle(ButtonStyle.Success)
 	.setDisabled(true);
 
 export const enterUserOnButtonClicked = async (
@@ -42,7 +42,7 @@ export const enterUserOnButtonClicked = async (
     if (prediction === null) return;
 
     const selectMenuToShow = predictionEnterMenuFunc(pid, prediction.outcome_1, prediction.outcome_2);
-    const row = new MessageActionRow().addComponents(selectMenuToShow);
+    const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([selectMenuToShow]);
 
     await interaction.followUp({components:[row], content: `Enter Prediction! pid: ${prediction.predictionId}`, ephemeral: true});
 };

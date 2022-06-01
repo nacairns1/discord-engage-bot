@@ -9,6 +9,7 @@ import {
 	addNewUserGuildMembership,
 	findUserGuildMembership,
 	incrementUserPoints,
+	updateUserAdminPrivelege,
 } from "../userGuildMemberships/userGuildMemberships";
 
 import { addNewUser, findUser } from "../users/db-users";
@@ -121,5 +122,22 @@ export const addPointsToUserOnEngagement = async (
 	} catch (e) {
 		console.error(e);
 		return null;
+	}
+};
+
+export const updateDiscordUserAdminRole = async (
+	userId: string,
+	guildId: string,
+	admin: boolean
+) => {
+	const prevUGM = await findUserGuildMembership(userId, guildId);
+
+	if (prevUGM === null) return null;
+
+	if (prevUGM.admin === admin) {
+		return null;
+	} else {
+		const newUGM = await updateUserAdminPrivelege(userId, guildId, admin);
+		return newUGM;
 	}
 };

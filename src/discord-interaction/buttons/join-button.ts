@@ -1,6 +1,6 @@
 import { ButtonBuilder } from "@discordjs/builders";
 import { ButtonStyle } from "discord-api-types/v10";
-import { ButtonInteraction, Interaction, MessageButton } from "discord.js";
+import { ButtonInteraction, Interaction } from "discord.js";
 import { addNewDiscordUserInGuild } from "../../db-interactions/discord/discord-users";
 
 export const joinButton = new ButtonBuilder()
@@ -8,10 +8,10 @@ export const joinButton = new ButtonBuilder()
 	.setLabel("START POINTS!")
 	.setStyle(ButtonStyle.Primary);
 
-export const joinMessageButton = new MessageButton()
+export const joinMessageButton = new ButtonBuilder()
 	.setCustomId("user-join")
 	.setLabel("START POINTS!")
-	.setStyle("PRIMARY");
+	.setStyle(ButtonStyle.Primary);
 	
 export const addUserOnButtonClicked = async (
 	interaction: ButtonInteraction
@@ -19,7 +19,7 @@ export const addUserOnButtonClicked = async (
 	const user = interaction.user;
 	const guild = interaction.guild;
 
-	console.log(interaction);
+
 	if (guild === null) return;
 	try {
 		const newUser = await addNewDiscordUserInGuild(
