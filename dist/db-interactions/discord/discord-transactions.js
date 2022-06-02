@@ -161,8 +161,8 @@ const updateDiscordPredictionEntry = async (predictionId, userId, guildId, wager
         where: { predictionId_userId_guildId: { predictionId, userId, guildId } },
     });
     if (foundPredictionEntry === null) {
-        console.error("no user found to update");
-        return null;
+        const newPredictionEntry = await (0, exports.addNewDiscordPredictionEntry)(predictionId, userId, guildId, wageredPoints, predicted_outcome);
+        return newPredictionEntry;
     }
     const ugm = await prisma.userGuildMemberships.findUnique({
         where: { userId_guildId: { userId, guildId } },
@@ -200,7 +200,7 @@ const updateDiscordPredictionEntry = async (predictionId, userId, guildId, wager
             // transaction to update the UGM and PE
             console.log("attempting updated wager...");
             await prisma.$transaction([updatedUgm, updatedPe]);
-            return updatedPe;
+            return await updatedPe;
         }
         // case where we are adding points but still have points leftover
         const updatedUgm = prisma.userGuildMemberships.update({
@@ -228,7 +228,7 @@ const updateDiscordPredictionEntry = async (predictionId, userId, guildId, wager
         // transaction to update the UGM and PE
         console.log("attempting updated wager with points remaining (same side)...");
         await prisma.$transaction([updatedUgm, updatedPe]);
-        return updatedPe;
+        return await updatedPe;
     }
     // case found where points must be reallocated to new side of wager
     // case where the found prediction entry has a lesser amount than the new prediction entry (increasing total amount wagered on different side)
@@ -249,7 +249,7 @@ const updateDiscordPredictionEntry = async (predictionId, userId, guildId, wager
                 data: { predicted_outcome, wageredPoints: { increment: ugm.points } },
             });
             await prisma.$transaction([updatedUgm, updatedPE]);
-            return updatedPE;
+            return await updatedPE;
         }
         // case where the difference in the account is not too much and so the player has zero or more points remaining. decrements by wageredPoints
         const updatedUgm = prisma.userGuildMemberships.update({
@@ -262,10 +262,7 @@ const updateDiscordPredictionEntry = async (predictionId, userId, guildId, wager
         });
         // returns the predicted outcome and the new amount of wagered points
         await prisma.$transaction([updatedUgm, updatedPE]);
-        return {
-            predicted_outcome,
-            points: wageredPoints,
-        };
+        return await updatedPE;
     }
     // case where the found prediction entry has an equal amount to the new prediction entry
     //  |
@@ -276,7 +273,7 @@ const updateDiscordPredictionEntry = async (predictionId, userId, guildId, wager
             data: { predicted_outcome, wageredPoints },
         });
         await prisma.$transaction([updatedPE]);
-        return updatedPE;
+        return await updatedPE;
     }
     else {
         // case where the found prediction entry has a greater amount than the new prediction entry
@@ -292,7 +289,7 @@ const updateDiscordPredictionEntry = async (predictionId, userId, guildId, wager
             data: { predicted_outcome, wageredPoints: wageredPoints },
         });
         await prisma.$transaction([updatedUgm, updatedPE]);
-        return updatedPE;
+        return await updatedPE;
     }
 };
 exports.updateDiscordPredictionEntry = updateDiscordPredictionEntry;

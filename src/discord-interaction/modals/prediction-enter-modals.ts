@@ -16,7 +16,7 @@ import {
 
 import wordsToNumbers from "words-to-numbers";
 
-import { addNewDiscordPredictionEntry } from "../../db-interactions/discord/discord-transactions";
+import { updateDiscordPredictionEntry } from "../../db-interactions/discord/discord-transactions";
 
 export const predictionEntryModalGenerator = (predicted_outcome: string) => {
 	const pointsInput: ModalActionRowComponentBuilder = new TextInputBuilder()
@@ -81,7 +81,15 @@ export const modalEnterSubmitHandler = async (
 	console.log(predictionId);
 
 	try {
-		const newPredictionEntry = await addNewDiscordPredictionEntry(
+		if (wagered_points <= 0) {
+			await interaction.followUp({
+				content: "You have to bet a positive number of points!",
+				ephemeral: true,
+			});
+			return;
+		}
+
+		const newPredictionEntry = await updateDiscordPredictionEntry(
 			predictionId,
 			userId,
 			guildId,
@@ -103,12 +111,7 @@ export const modalEnterSubmitHandler = async (
 			});
 			return;
 		}
-		if (wagered_points <= 0) {
-			await interaction.followUp({
-				content: "You have to bet a valid number of points!",
-				ephemeral: true,
-			});
-		}
+		
 
 		await interaction.followUp({
 			content: `Successfully submitted ${newPredictionEntry.wageredPoints} points for **${newPredictionEntry.predicted_outcome}**`,

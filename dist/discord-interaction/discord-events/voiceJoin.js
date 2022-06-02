@@ -5,6 +5,7 @@ const discord_transactions_1 = require("../../db-interactions/discord/discord-tr
 const checkVoiceState = async (userId, guildId, pointsToAdd) => {
     try {
         const updatePoints = await (0, discord_transactions_1.updateDiscordUserPointsOnEngagement)(userId, guildId, pointsToAdd);
+        console.log(`activity points created for ${userId} in ${guildId} for a messageCreation event!`);
         return updatePoints;
     }
     catch (e) {
