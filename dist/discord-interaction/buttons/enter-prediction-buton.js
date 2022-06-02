@@ -21,8 +21,6 @@ exports.closedMessageButton = new discord_js_1.ButtonBuilder()
     .setDisabled(true);
 const enterUserOnButtonClicked = async (interaction) => {
     await interaction.deferReply({ ephemeral: true });
-    console.log('seeing interaction');
-    console.log(interaction);
     const guildId = interaction.guildId;
     const pid = interaction.customId.split(' ')[1];
     if (guildId === null) {

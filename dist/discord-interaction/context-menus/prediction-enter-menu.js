@@ -23,10 +23,8 @@ const predictionEnterMenuController = async (interaction) => {
     const rawContent = interaction.message.content;
     const splitContent = rawContent.split(' ');
     const pid = splitContent[splitContent.length - 1];
-    console.log(interaction.component);
-    console.log(interaction.values);
     const predicted_outcome = interaction.values[0];
-    console.log(`opening prediction popup ${pid} for user ${interaction.user.id} in guild ${interaction.guildId}`);
+    // console.log( `opening prediction popup ${pid} for user ${interaction.user.id} in guild ${interaction.guildId}`);
     const modal = (0, prediction_enter_modals_1.predictionEntryModalGenerator)(predicted_outcome);
     interaction.showModal(modal);
     try {

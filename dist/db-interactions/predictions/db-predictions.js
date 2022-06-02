@@ -43,7 +43,6 @@ const addNewPrediction = async (predictionId, guildId, creatorId, outcome_1, out
             timeCreated,
         },
     });
-    console.log(newPrediction);
     return newPrediction;
 };
 exports.addNewPrediction = addNewPrediction;
@@ -57,7 +56,6 @@ const finishPrediction = async (predictionId, decided_outcome) => {
         where: { predictionId },
         data: { decided_outcome, active: false, timeEnded: (0, dayjs_1.default)().toISOString() },
     });
-    console.log(updatePrediction);
     return updatePrediction;
 };
 exports.finishPrediction = finishPrediction;

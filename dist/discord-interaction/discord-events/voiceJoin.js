@@ -36,7 +36,7 @@ const voiceStateUpdate = {
         }
         else {
             const timer = setInterval(async () => {
-                await checkVoiceState(newUserId, guildId, 1000);
+                await checkVoiceState(newUserId, guildId, 100);
             }, 900000);
             // new voice state is the member joining or changing a voice channel.
             //  Initialize the interval for the user if they are not just changing the channel

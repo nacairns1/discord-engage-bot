@@ -9,7 +9,6 @@ const dayjs_1 = __importDefault(require("dayjs"));
 const prisma = new client_1.PrismaClient();
 const findAllGuildMemberShips = async () => {
     const userGuildMemberships = await prisma.userGuildMemberships.findMany();
-    console.log(userGuildMemberships);
     return userGuildMemberships;
 };
 exports.findAllGuildMemberShips = findAllGuildMemberShips;
@@ -38,7 +37,6 @@ const updateUserAdminPrivelege = async (userId, guildId, admin) => {
         where: { userId_guildId: { userId, guildId } },
         data: { admin },
     });
-    console.log(userGuildMembership);
     return userGuildMembership;
 };
 exports.updateUserAdminPrivelege = updateUserAdminPrivelege;
@@ -49,7 +47,6 @@ const updateUserPoints = async (userId, guildId, points) => {
             points,
         },
     });
-    console.log(updatedMemberPoints);
     return updatedMemberPoints;
 };
 exports.updateUserPoints = updateUserPoints;
@@ -63,7 +60,6 @@ const incrementUserPoints = async (userId, guildId, points) => {
                 },
             },
         });
-        console.log(updatedMemberPoints);
         return updatedMemberPoints;
     }
     catch (e) {
