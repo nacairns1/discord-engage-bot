@@ -108,10 +108,10 @@ const predictionStart: Command = {
 				user.id,
 				interaction.guildId
 			);
-			if (userCheck === null || !userCheck.manager) {
+			if (userCheck === null) {
 				await interaction.followUp({
 					content:
-						"You do not have permission to start a prediction in this server.",
+						"You are not a registered member of this server.",
 					ephemeral: true,
 				});
 				return;

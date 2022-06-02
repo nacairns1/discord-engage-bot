@@ -62,7 +62,14 @@ const modalEnterSubmitHandler = async (interaction) => {
     let predictionId = contentArr[contentArr.length - 1];
     console.log(predictionId);
     try {
-        const newPredictionEntry = await (0, discord_transactions_1.addNewDiscordPredictionEntry)(predictionId, userId, guildId, wagered_points, predicted_outcome);
+        if (wagered_points <= 0) {
+            await interaction.followUp({
+                content: "You have to bet a positive number of points!",
+                ephemeral: true,
+            });
+            return;
+        }
+        const newPredictionEntry = await (0, discord_transactions_1.updateDiscordPredictionEntry)(predictionId, userId, guildId, wagered_points, predicted_outcome);
         if (newPredictionEntry === null) {
             await interaction.followUp({
                 content: "Error submitting! Make sure the prediction is still open.",
@@ -76,12 +83,6 @@ const modalEnterSubmitHandler = async (interaction) => {
                 ephemeral: true,
             });
             return;
-        }
-        if (wagered_points <= 0) {
-            await interaction.followUp({
-                content: "You have to bet a valid number of points!",
-                ephemeral: true,
-            });
         }
         await interaction.followUp({
             content: `Successfully submitted ${newPredictionEntry.wageredPoints} points for **${newPredictionEntry.predicted_outcome}**`,
