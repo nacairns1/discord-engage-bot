@@ -19,6 +19,8 @@ Inspired by Twitch predictions, a Bot to track user engagement and create predic
  - Ending the prediction cashes out the winners proportionally to the amount of points that they enter
  - Predictions can be ended with a given prediction ID or by using an END PREDICTION button tied to each prediction message
 
+Example Prediction Flow: 
+![Screenshot_20220602_160509](https://user-images.githubusercontent.com/94420090/171728651-a1e2ff7e-caed-4e31-9108-a024dbd4a861.png)
 
 ## Roles 
  - Admin level has complete control over all predictions and user roles 
@@ -27,7 +29,8 @@ Inspired by Twitch predictions, a Bot to track user engagement and create predic
 
 ## Data Policy
 
-The data is stored on a local SQLite database on the secured local server the bot is located. The data models, and subsequently all tracked data types **NOT VALUES**, are available in the /prisma folder. I am the sole manager and have sole access to the data stored in the database. This data will never be shared for any purposes other than uses explicitly for the functionality of this bot. The bot tracks as little data as possible to keep predictions functional. Users opting in acknowledge and accept this data tracking. 
+The data is stored on a local SQLite database on the secured local server the bot i
+s located. The data models, and subsequently all tracked data types **NOT VALUES**, are available in the /prisma folder. I am the sole manager and have sole access to the data stored in the database. This data will never be shared for any purposes other than uses explicitly for the functionality of this bot. The bot tracks as little data as possible to keep predictions functional. Users opting in acknowledge and accept this data tracking. 
 
 ------------
 
