@@ -13,7 +13,7 @@ The bot aims to be as minimalistic as possible to not infringe on your discord e
 
 To get started in your server, type \`/prediction-server initialize\` **in the server where the bot has been added** in order to activate the bot's full capabilities.  
 
-More command information is available via \`/prediction-help\`. You are automatically granted prediction admin privelege.`;
+You are automatically granted prediction admin privelege.`;
 const guildCreate = {
     name: "guildCreate",
     async execute(guild) {

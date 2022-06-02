@@ -32,6 +32,7 @@ const predictionEndOnButtonClicked = async (interaction) => {
                 content: "You do not have admin priveleges on this server",
                 ephemeral: true,
             });
+            return;
         }
         const rawContent = interaction.message.content;
         const splitContent = rawContent.split(' ');

@@ -52,7 +52,7 @@ const cashOutPlayers = async (predictionId, decided_outcome) => {
     let allPredictionEntriesUpdateQueue = allPlayers.map((player) => {
         const { predictionId, userId, guildId } = player;
         if (player.predicted_outcome === decided_outcome) {
-            player.earnedPoints = (player.wageredPoints / winnerSum) * totalSum;
+            player.earnedPoints = Math.ceil((player.wageredPoints / winnerSum) * totalSum);
         }
         let updatePromise = prisma.predictionEntries.update({
             where: {
@@ -75,7 +75,7 @@ const cashOutPlayers = async (predictionId, decided_outcome) => {
             where: { userId_guildId: { userId, guildId } },
             data: {
                 points: {
-                    increment: pointsToAdd,
+                    increment: Math.round(pointsToAdd),
                 },
             },
         });

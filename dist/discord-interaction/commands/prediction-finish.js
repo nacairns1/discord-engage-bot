@@ -35,6 +35,7 @@ const predictionUserInit = {
                     content: "You do not have admin priveleges on this server",
                     ephemeral: true,
                 });
+                return;
             }
             const predictionId = interaction.options.get("predictionid", true).value;
             if (typeof predictionId !== 'string') {

@@ -135,7 +135,7 @@ const embedPredictionBuilder = async (title, predictionId, guildId, time) => {
     let o_1_playerMax = 0;
     let o_1_playerMaxName = "No entries yet!";
     let o_2_playerMax = 0;
-    let o_2_playerMaxName;
+    let o_2_playerMaxName = "No entries yet!";
     if (gm === null) {
         o_1_points = 0;
         o_2_points = 0;

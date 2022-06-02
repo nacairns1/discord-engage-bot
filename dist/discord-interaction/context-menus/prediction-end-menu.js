@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.predictionEndMenuController = exports.predictionEndMenuFunc = void 0;
 const discord_js_1 = require("discord.js");
 const discord_transactions_1 = require("../../db-interactions/discord/discord-transactions");
+const userGuildMemberships_1 = require("../../db-interactions/userGuildMemberships/userGuildMemberships");
 const predictionEndMenuFunc = (outcome_1, outcome_2) => new discord_js_1.SelectMenuBuilder()
     .setCustomId("prediction-end")
     .setPlaceholder("SELECTING AN OPTION ENDS THE PREDICTION")
@@ -33,6 +34,19 @@ const predictionEndMenuController = async (interaction) => {
     console.log(`ending prediction pid: ${pid} outcome: ${decided_outcome}`);
     let finalScores;
     try {
+        const user = interaction.user;
+        const guildId = interaction.guildId;
+        if (guildId === null) {
+            return null;
+        }
+        const userCheck = await (0, userGuildMemberships_1.findUserGuildMembership)(user.id, guildId);
+        if (userCheck === null || !userCheck.admin) {
+            interaction.followUp({
+                content: "You do not have admin priveleges.",
+                ephemeral: true,
+            });
+            return;
+        }
         if (decided_outcome === "REFUND") {
             await (0, discord_transactions_1.refundDiscordPrediction)(pid);
             await interaction.followUp({
@@ -53,7 +67,7 @@ const predictionEndMenuController = async (interaction) => {
             await interaction.followUp({ content: `Prediction has already ended.`, ephemeral: true });
             return;
         }
-        await interaction.followUp(`${decided_outcome} won! Distributing ${finalScores === null || finalScores === void 0 ? void 0 : finalScores.totalSum} to the winners...`);
+        await interaction.followUp(`${decided_outcome} won! They won a total of ${finalScores === null || finalScores === void 0 ? void 0 : finalScores.totalSum} points!`);
         return;
     }
     catch (e) {
