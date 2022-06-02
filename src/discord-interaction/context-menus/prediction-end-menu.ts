@@ -4,6 +4,8 @@ import {
 	cashOutPlayers,
 	refundDiscordPrediction,
 } from "../../db-interactions/discord/discord-transactions";
+import { findUserGuildMembership } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
+
 
 export const predictionEndMenuFunc = (outcome_1: string, outcome_2: string) =>
 	new SelectMenuBuilder()
@@ -47,6 +49,24 @@ export const predictionEndMenuController = async (
 		| null
 		| undefined;
 	try {
+
+		const user = interaction.user;
+		const guildId = interaction.guildId;
+		if (guildId === null) {
+			return null;
+		}
+
+
+		const userCheck = await findUserGuildMembership(user.id, guildId);
+		if (userCheck === null || !userCheck.admin) {
+			interaction.followUp({
+				content: "You do not have admin priveleges.",
+				ephemeral: true,
+			});
+			return;
+		}
+
+
 		if (decided_outcome === "REFUND") {
 			await refundDiscordPrediction(pid);
 			await interaction.followUp({
