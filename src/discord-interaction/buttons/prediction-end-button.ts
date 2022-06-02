@@ -28,6 +28,10 @@ export const predictionEndOnButtonClicked = async (
 try {
 			const userId = interaction.user.id;
 			const guildId = interaction.guildId;
+            const rawContent = interaction.message.content;
+            const splitContent = rawContent.split(' ');
+            const predictionId = splitContent[splitContent.length - 1 ];
+            
 			if (guildId === null) {
 				await interaction.followUp("Must use this command inside of a server");
 				return;
@@ -40,18 +44,28 @@ try {
 				});
 				return;
 			}
-			if (!ugm.admin) {
+
+			const p = await findPredictionById(predictionId);
+			if (p === null) throw Error("no prediction found");
+
+			const creatorId = p.creatorId;
+
+			if (!ugm.admin && (interaction.user.id === creatorId && !ugm.manager)) {
 				await interaction.followUp({
-					content: "You do not have admin priveleges on this server",
+					content: "You do not have manager privileges on this server",
 					ephemeral: true,
 				});
-                return;
+				return;
+
+			} else if (!ugm.admin && !(creatorId === interaction.user.id && ugm.manager)) {
+				await interaction.followUp({
+					content: "You do not have admin privileges on this server",
+					ephemeral: true,
+				});
+				return;
 			}
 
-            const rawContent = interaction.message.content;
-            const splitContent = rawContent.split(' ');
-            const predictionId = splitContent[splitContent.length - 1 ];
-            
+
 
 			if (typeof predictionId !== 'string') {
 				interaction.followUp({
@@ -61,8 +75,6 @@ try {
 				return;
 			}
 
-			const p = await findPredictionById(predictionId);
-			if (p === null) throw Error("no prediction found");
 			
 
 			const { outcome_1, outcome_2 } = p;

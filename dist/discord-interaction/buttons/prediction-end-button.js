@@ -15,6 +15,9 @@ const predictionEndOnButtonClicked = async (interaction) => {
     try {
         const userId = interaction.user.id;
         const guildId = interaction.guildId;
+        const rawContent = interaction.message.content;
+        const splitContent = rawContent.split(' ');
+        const predictionId = splitContent[splitContent.length - 1];
         if (guildId === null) {
             await interaction.followUp("Must use this command inside of a server");
             return;
@@ -27,16 +30,24 @@ const predictionEndOnButtonClicked = async (interaction) => {
             });
             return;
         }
-        if (!ugm.admin) {
+        const p = await (0, db_predictions_1.findPredictionById)(predictionId);
+        if (p === null)
+            throw Error("no prediction found");
+        const creatorId = p.creatorId;
+        if (!ugm.admin && (interaction.user.id === creatorId && !ugm.manager)) {
             await interaction.followUp({
-                content: "You do not have admin priveleges on this server",
+                content: "You do not have manager privileges on this server",
                 ephemeral: true,
             });
             return;
         }
-        const rawContent = interaction.message.content;
-        const splitContent = rawContent.split(' ');
-        const predictionId = splitContent[splitContent.length - 1];
+        else if (!ugm.admin && !(creatorId === interaction.user.id && ugm.manager)) {
+            await interaction.followUp({
+                content: "You do not have admin privileges on this server",
+                ephemeral: true,
+            });
+            return;
+        }
         if (typeof predictionId !== 'string') {
             interaction.followUp({
                 content: "No prediction found with the given ID",
@@ -44,9 +55,6 @@ const predictionEndOnButtonClicked = async (interaction) => {
             });
             return;
         }
-        const p = await (0, db_predictions_1.findPredictionById)(predictionId);
-        if (p === null)
-            throw Error("no prediction found");
         const { outcome_1, outcome_2 } = p;
         const selectMenu = (0, prediction_end_menu_1.predictionEndMenuFunc)(outcome_1, outcome_2);
         const actionRow = new discord_js_1.ActionRowBuilder().addComponents([selectMenu]);
