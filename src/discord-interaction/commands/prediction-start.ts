@@ -95,7 +95,7 @@ const predictionStart: Command = {
 			});
 			return;
 		}
-		if (outcome_1.length > 15 || outcome_2.length > 15) {
+		if (outcome_1.length > 20 || outcome_2.length > 20) {
 			await interaction.followUp({
 				content: "Your prediction options are too long. Please try again.",
 				ephemeral: true,
@@ -158,7 +158,7 @@ const predictionStart: Command = {
 			await interaction.editReply({
 				content: message.content,
 				embeds: message.embeds,
-				components: [message.components],
+				components: [message.components]
 			});
 			await timeout(1000);
 			time_open--;
