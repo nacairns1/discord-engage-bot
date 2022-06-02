@@ -56,20 +56,20 @@ const predictionManagerRole = {
             const roleSF = (0, discord_js_1.roleMention)(role.id);
             if (manager) {
                 await interaction.followUp({
-                    content: `${roleSF} has been given Manager priveleges!`,
+                    content: `${roleSF} has been given Manager privileges!`,
                 });
                 return;
             }
             else {
                 await interaction.followUp({
-                    content: `${roleSF} has had Manager priveleges removed!`,
+                    content: `${roleSF} has had Manager privileges removed!`,
                 });
                 return;
             }
         }
         catch (e) {
             await interaction.followUp({
-                content: "Error when adding role members to Manager priveleges",
+                content: "Error when adding role members to Manager privileges",
                 ephemeral: true,
             });
             return;
