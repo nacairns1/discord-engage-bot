@@ -28,9 +28,6 @@ export const enterUserOnButtonClicked = async (
 	interaction: ButtonInteraction
 ) => {
     await interaction.deferReply({ephemeral: true})
-    console.log('seeing interaction');
-
-	console.log(interaction);
 
 	const guildId = interaction.guildId;
 	const pid = interaction.customId.split(' ')[1];

@@ -12,7 +12,6 @@ export const findAllGuildMemberShips = async (): Promise<
 	UserGuildMemberships[]
 > => {
 	const userGuildMemberships = await prisma.userGuildMemberships.findMany();
-	console.log(userGuildMemberships);
 	return userGuildMemberships;
 };
 
@@ -53,7 +52,6 @@ export const updateUserAdminPrivelege = async (
 		where: { userId_guildId: { userId, guildId } },
 		data: { admin },
 	});
-	console.log(userGuildMembership);
 	return userGuildMembership;
 };
 
@@ -68,7 +66,6 @@ export const updateUserPoints = async (
 			points,
 		},
 	});
-	console.log(updatedMemberPoints);
 	return updatedMemberPoints;
 };
 
@@ -86,7 +83,6 @@ export const incrementUserPoints = async (
 				},
 			},
 		});
-		console.log(updatedMemberPoints);
 		return updatedMemberPoints;
 	} catch (e) {
         console.error(e);

@@ -49,7 +49,6 @@ export const addNewPrediction = async (
 			timeCreated,
 		},
 	});
-	console.log(newPrediction);
 	return newPrediction;
 };
 
@@ -66,7 +65,6 @@ export const finishPrediction = async (
 		where: { predictionId },
 		data: { decided_outcome, active: false, timeEnded: dayjs().toISOString() },
 	});
-    console.log(updatePrediction);
 	return updatePrediction;
 };
 

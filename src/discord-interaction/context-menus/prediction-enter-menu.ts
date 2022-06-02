@@ -25,11 +25,9 @@ export const predictionEnterMenuFunc = (pid: string, outcome_1: string, outcome_
 		const splitContent = rawContent.split(' ');
 		const pid = splitContent[splitContent.length - 1];
 		
-        console.log(interaction.component);
-        console.log(interaction.values);
         const predicted_outcome = interaction.values[0];
 
-		console.log( `opening prediction popup ${pid} for user ${interaction.user.id} in guild ${interaction.guildId}`);
+		// console.log( `opening prediction popup ${pid} for user ${interaction.user.id} in guild ${interaction.guildId}`);
 		
         const modal = predictionEntryModalGenerator(predicted_outcome);
         interaction.showModal(modal);
