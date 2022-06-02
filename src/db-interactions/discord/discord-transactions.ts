@@ -353,6 +353,7 @@ export const updateDiscordUserPointsOnEngagement = async (
 
 	const timeDiff = now.diff(ugm.lastEarnedPonts, "minutes");
 
+
 	// case where its default last time earned points aka never OR past the requisite amount of time to earn points (15 minutes)
 	if (ugm.lastEarnedPonts == "" || timeDiff >= 15) {
 		//attempt adding the points to the found ugm

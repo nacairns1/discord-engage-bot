@@ -18,7 +18,8 @@ const messageCreate = {
             if (!(isGuildActive && isUserActive))
                 return;
             const engagementUpdate = await (0, discord_transactions_1.updateDiscordUserPointsOnEngagement)(userId, guildId, 100);
-            console.log(`activity points created for ${userId} in ${guildId} for a messageCreation event!`);
+            if (engagementUpdate !== null)
+                console.log(`activity points created for ${userId} in ${guildId} for a messageCreation event!`);
             return engagementUpdate;
         }
         catch (e) {

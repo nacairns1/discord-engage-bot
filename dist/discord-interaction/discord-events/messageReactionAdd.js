@@ -17,8 +17,9 @@ const messageReactionAdd = {
             const isUserActive = await (0, db_users_1.findUser)(userId);
             if (!(isGuildActive && isUserActive))
                 return;
-            await (0, discord_transactions_1.updateDiscordUserPointsOnEngagement)(userId, guildId, 100);
-            console.log(`activity points created for ${userId} in ${guildId} for a messageReactionAdd event!`);
+            const engagementUpdate = await (0, discord_transactions_1.updateDiscordUserPointsOnEngagement)(userId, guildId, 100);
+            if (engagementUpdate !== null)
+                console.log(`activity points created for ${userId} in ${guildId} for a messageReactionAdd event!`);
         }
         catch (e) {
             console.error(e);
