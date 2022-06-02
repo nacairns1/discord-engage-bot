@@ -7,10 +7,10 @@ const userGuildMemberships_1 = require("../../db-interactions/userGuildMembershi
 const predictionManager = {
     data: new builders_1.SlashCommandBuilder()
         .setName("prediction-manager")
-        .setDescription("Change a user's admin prediction privileges")
+        .setDescription("Change a user's manager prediction privileges")
         .addUserOption((user) => user.setName("user").setDescription("user to change").setRequired(true))
         .addBooleanOption((b) => b
-        .setDescription("true sets user to admin, false removes")
+        .setDescription("true sets user to manager, false removes")
         .setName("manager")
         .setRequired(true)),
     async execute(interaction) {
