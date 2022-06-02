@@ -42,6 +42,7 @@ const generateData = async () => {
             guildId,
             points: Math.ceil(Math.random() * 10000 * (Math.random() * 5)),
             admin: false,
+            manager: false,
             timeCreated: (0, dayjs_1.default)().toISOString(),
             lastEarnedPonts: "n/a",
         });

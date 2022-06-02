@@ -9,7 +9,8 @@ import {
 	addNewUserGuildMembership,
 	findUserGuildMembership,
 	incrementUserPoints,
-	updateUserAdminPrivelege,
+	updateUserAdminPrivilege,
+	updateUserManagerPrivilege,
 } from "../userGuildMemberships/userGuildMemberships";
 
 import { addNewUser, findUser } from "../users/db-users";
@@ -137,7 +138,25 @@ export const updateDiscordUserAdminRole = async (
 	if (prevUGM.admin === admin) {
 		return null;
 	} else {
-		const newUGM = await updateUserAdminPrivelege(userId, guildId, admin);
+		const newUGM = await updateUserAdminPrivilege(userId, guildId, admin);
+		return newUGM;
+	}
+};
+
+
+export const updateDiscordUserManagerRole = async (
+	userId: string,
+	guildId: string,
+	manager: boolean
+) => {
+	const prevUGM = await findUserGuildMembership(userId, guildId);
+
+	if (prevUGM === null) return null;
+
+	if (prevUGM.manager === manager) {
+		return null;
+	} else {
+		const newUGM = await updateUserManagerPrivilege(userId, guildId, manager);
 		return newUGM;
 	}
 };

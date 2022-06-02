@@ -3,7 +3,6 @@ import { addNewDiscordGuild } from "../../db-interactions/discord/discord-guilds
 import { updateDiscordUserPointsOnEngagement } from "../../db-interactions/discord/discord-transactions";
 import { addNewDiscordUserInGuild } from "../../db-interactions/discord/discord-users";
 import { addNewGuild } from "../../db-interactions/guilds/db-guilds";
-import { updateUserAdminPrivelege } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
 import { addCommandsToGuild } from "../scripts/deploy-commands";
 import Event from "./EventInterface";
 
@@ -15,9 +14,11 @@ The relevant information stored about these predictions are the user chosen outc
 
 The bot aims to be as minimalistic as possible to not infringe on your discord experience. The full list of stored data is available on this projects github (https://github.com/nacairns1/discord-engage-bot)
 
-To get started in your server, type \`/prediction-server initialize\` **in the server where the bot has been added** in order to activate the bot's full capabilities.  
+To get started in your server, type \`/prediction-setup\` **in the server where the bot has been added** in order to activate the bot's full capabilities.  
 
-You are automatically granted prediction admin privelege.`
+You are automatically granted prediction admin privilege. You can add more admins add admins extremely sparingly. They can send and remove user points as well as start and end any prediciton. 
+
+Managers are members who can start and end only the predictions that they create without the ability to change other user's privileges. Current users who have opted in and are members of a certain role in your server can all be given manager privilege via \`/prediction-manager-role\``
 
 const guildCreate: Event = {
 	name: "guildCreate",

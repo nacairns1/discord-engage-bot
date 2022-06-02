@@ -10,8 +10,7 @@ class tsClient extends Client {
 		super(options);
 	}
 	commands?: Collection<string, Command>;
-	intervals?: Collection<string, NodeJS.Timer>
-	
+	intervals?: Collection<string, NodeJS.Timer>;
 }
 
 export const client = new tsClient({

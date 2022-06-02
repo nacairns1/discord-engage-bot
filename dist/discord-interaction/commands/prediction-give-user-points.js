@@ -6,7 +6,7 @@ const userGuildMemberships_1 = require("../../db-interactions/userGuildMembershi
 // command to give a user points (must be positive value)
 const predictionGiveUser = {
     data: new builders_1.SlashCommandBuilder()
-        .setName("prediction-give-user")
+        .setName("prediction-send-points")
         .setDescription("Send a user points some points")
         .addUserOption((option) => option
         .setDescription("User to Receive Points")
@@ -64,10 +64,8 @@ const predictionGiveUser = {
                 });
                 return;
             }
-            await interaction.reply(`sending points to <@${receivingUser.id}>...`);
             await (0, discord_users_1.addPointsToDiscordUserInGuild)(sendingUser.id, interaction.guildId, points);
-            await interaction.editReply(`success!`);
-            await interaction.deleteReply();
+            await interaction.followUp({ content: `Successfully sent ${points} points to <@${receivingUser.id}>!`, ephemeral: true });
             return;
         }
         catch (e) {

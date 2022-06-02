@@ -1,29 +1,26 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import dayjs from "dayjs";
 import { CommandInteraction, roleMention } from "discord.js";
-import { updateDiscordUserAdminRole } from "../../db-interactions/discord/discord-users";
+import { updateDiscordUserManagerRole } from "../../db-interactions/discord/discord-users";
 import {
 	findUserGuildMembership,
-	updateUserAdminPrivelege,
 } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
 import Command from "./CommandInterface";
 
-// returns the points for the invoking user
 
-const predictionAddAdminRole: Command = {
+const predictionManagerRole: Command = {
 	data: new SlashCommandBuilder()
-		.setName("prediction-change-admin-role")
-		.setDescription("Change admin status of CURRENT users w/ role")
+		.setName("prediction-manager-role")
+		.setDescription("Change manager status of CURRENT users w/ role")
 		.addRoleOption((role) =>
 			role
 				.setName("role")
-				.setDescription("DANGER opted-in users will be granted admin")
+				.setDescription("DANGER opted-in users will be granted manager")
 				.setRequired(true)
 		)
 		.addBooleanOption((b) =>
 			b
-				.setDescription("true sets user to admin, false removes")
-				.setName("admin")
+				.setDescription("true sets user to manager, false removes")
+				.setName("manager")
 				.setRequired(true)
 		),
 	async execute(interaction: CommandInteraction) {
@@ -31,14 +28,14 @@ const predictionAddAdminRole: Command = {
 		const user = interaction.user;
 		const guildId = interaction.guild?.id;
 
-		const admin = interaction.options.get("admin", true).value;
+		const manager = interaction.options.get("manager", true).value;
 
-		if (guildId === undefined || typeof admin !== "boolean") return;
+		if (guildId === undefined || typeof manager !== "boolean") return;
 
 		const userCheck = await findUserGuildMembership(user.id, guildId);
 		if (userCheck === null || !userCheck.admin) {
 			interaction.followUp({
-				content: "You do not have admin priveleges.",
+				content: "You do not have admin privileges.",
 				ephemeral: true,
 			});
 			return;
@@ -55,34 +52,33 @@ const predictionAddAdminRole: Command = {
 		if (interaction.guild === null) return;
 
 		const guildMembers = await interaction.guild.members.fetch();
-		console.log(guildMembers);
-		// queue up update role priveleges if user already has opted in.
 
 		const guildMemberUpdateQueue = guildMembers
 			.filter((member) => {
 				return member.roles.cache.has(role.id);
 			})
 			.map((member) => {
-				let updatePromise = updateDiscordUserAdminRole(member.id, guildId, admin);
+				let updatePromise = updateDiscordUserManagerRole(member.id, guildId, manager);
 				return updatePromise;
 			});
 
 		try {
 			const updatedUsers = await Promise.all([guildMemberUpdateQueue]);
 			const roleSF = roleMention(role.id);
-			if (admin) {
+			if (manager) {
 				await interaction.followUp({
-					content: `${roleSF} has been given admin priveleges!`,
+					content: `${roleSF} has been given Manager priveleges!`,
 				});
+				return;
 			} else {
 				await interaction.followUp({
-					content: `${roleSF} has had admin priveleges removed!`,
+					content: `${roleSF} has had Manager priveleges removed!`,
 				});
+				return;
 			}
-			return;
 		} catch (e) {
 			await interaction.followUp({
-				content: "Error when adding role members to admin priveleges",
+				content: "Error when adding role members to Manager priveleges",
 				ephemeral: true,
 			});
 			return;
@@ -90,4 +86,4 @@ const predictionAddAdminRole: Command = {
 	},
 };
 
-export default predictionAddAdminRole;
+export default predictionManagerRole;

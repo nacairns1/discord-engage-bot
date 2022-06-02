@@ -18,6 +18,7 @@ const predictionUserInit = {
             const userNew = await (0, discord_users_1.addNewDiscordUserInGuild)(user.id, (_c = interaction.guild) === null || _c === void 0 ? void 0 : _c.id, 500, false);
             if (userNew === null) {
                 await interaction.followUp({ content: 'You\'re already a member!', ephemeral: true });
+                return;
             }
             await interaction.followUp({
                 content: `Successfully added ${user.username} to prediction points for server: ${guildName} You've earned 500 points to start!`,

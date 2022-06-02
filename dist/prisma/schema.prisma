@@ -58,6 +58,7 @@ model UserGuildMemberships {
   timeCreated       String
   lastEarnedPonts   String              @default("")
   admin             Boolean?            @default(false)
+  manager           Boolean?            @default(false)
   Guilds            Guilds              @relation(fields: [guildId], references: [guildId])
   Users             Users               @relation(fields: [userId], references: [userId])
   PredictionEntries PredictionEntries[]

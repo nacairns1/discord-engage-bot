@@ -26,7 +26,8 @@ const predictionUserInit: Command = {
 			);
 
 			if (userNew === null) {
-				await interaction.followUp({content: 'You\'re already a member!', ephemeral: true})
+				await interaction.followUp({content: 'You\'re already a member!', ephemeral: true});
+				return;
 			}
 			await interaction.followUp({
 				content: `Successfully added ${user.username} to prediction points for server: ${guildName} You've earned 500 points to start!`,

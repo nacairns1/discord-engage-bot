@@ -18,13 +18,12 @@ const listEmbedBuilder = (lp: Predictions[]) => {
 	for (let i = 0; i < lp.length; i++) {
 		if (i >= 3) break;
 		let predictionId = lp[i].predictionId;
-		let isOpen = lp[i].isOpen;
 		let outcome_1 = lp[i].outcome_1;
 		let outcome_2 = lp[i].outcome_2;
 
 		fields.push({
-			name: predictionId,
-			value: `${outcome_1} OR ${outcome_2} \n Still Open? ${isOpen}`,
+			value: predictionId,
+			name: `${outcome_1} OR ${outcome_2}`,
 		});
 	}
 
@@ -40,16 +39,16 @@ const listEmbedBuilder = (lp: Predictions[]) => {
 const predictionUserInit: Command = {
 	data: new SlashCommandBuilder()
 		.setName("prediction-list-active")
-		.setDescription("Lists all active predictions on the guild"),
+		.setDescription("Lists active predictions in the server"),
 	async execute(interaction: CommandInteraction) {
 		const guildId = interaction.guildId;
 		if (guildId === null)
-			throw Error("cannot check predictions outside of guild");
+			throw Error("cannot check predictions outside of a server");
 
 		await interaction.deferReply();
 
 		const predictions = await getAllActivePredictionsInGuildId(guildId);
-		if (predictions === null) {
+		if (predictions === null || predictions.length === 0) {
 			await interaction.followUp({
 				content: "No active predictions found!",
 				ephemeral: true,

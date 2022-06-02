@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.incrementUserPoints = exports.updateUserPoints = exports.updateUserAdminPrivelege = exports.addNewUserGuildMembership = exports.findUserGuildMembership = exports.findAllGuildMemberShips = void 0;
+exports.incrementUserPoints = exports.updateUserPoints = exports.updateUserManagerPrivilege = exports.updateUserAdminPrivilege = exports.addNewUserGuildMembership = exports.findUserGuildMembership = exports.findAllGuildMemberShips = void 0;
 const client_1 = require("@prisma/client");
 const dayjs_1 = __importDefault(require("dayjs"));
 const prisma = new client_1.PrismaClient();
@@ -32,14 +32,21 @@ const addNewUserGuildMembership = async (userId, guildId, points = 0, admin = fa
     return userGuildMembership;
 };
 exports.addNewUserGuildMembership = addNewUserGuildMembership;
-const updateUserAdminPrivelege = async (userId, guildId, admin) => {
+const updateUserAdminPrivilege = async (userId, guildId, admin) => {
     const userGuildMembership = await prisma.userGuildMemberships.update({
         where: { userId_guildId: { userId, guildId } },
         data: { admin },
     });
     return userGuildMembership;
 };
-exports.updateUserAdminPrivelege = updateUserAdminPrivelege;
+exports.updateUserAdminPrivilege = updateUserAdminPrivilege;
+const updateUserManagerPrivilege = async (userId, guildId, manager) => {
+    await prisma.userGuildMemberships.update({
+        where: { userId_guildId: { userId, guildId } },
+        data: { manager },
+    });
+};
+exports.updateUserManagerPrivilege = updateUserManagerPrivilege;
 const updateUserPoints = async (userId, guildId, points) => {
     const updatedMemberPoints = await prisma.userGuildMemberships.update({
         where: { userId_guildId: { userId, guildId } },

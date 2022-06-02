@@ -3,16 +3,16 @@ import { CommandInteraction, IntegrationApplication } from "discord.js";
 import { findGuildUsersInPrediction } from "../../db-interactions/prediction-entries/db-prediction-entries";
 import {
 	findUserGuildMembership,
-	updateUserAdminPrivelege,
+	updateUserAdminPrivilege,
 } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
 import Command from "./CommandInterface";
 
-// add one specific admin to have the prediction admin privelege. Adds role if role is set for the server.
+// add one specific admin to have the prediction admin privilege. Adds role if role is set for the server.
 
-const predictionUserInit: Command = {
+const predictionAdmin: Command = {
 	data: new SlashCommandBuilder()
-		.setName("prediction-change-admin")
-		.setDescription("Change a user's admin prediction priveleges")
+		.setName("prediction-admin")
+		.setDescription("Change a user's admin prediction privileges")
 		.addUserOption((user) =>
 			user.setName("user").setDescription("user to change").setRequired(true)
 		)
@@ -27,9 +27,9 @@ const predictionUserInit: Command = {
 		const oldUser = interaction.user.id;
 		const newUser = interaction.options.getUser("user")?.id;
 		const guild = interaction.guildId;
-		const admin = interaction.options.get('admin', true).value;
+		const admin = interaction.options.get("admin", true).value;
 
-		if (typeof admin !== 'boolean') return null;
+		if (typeof admin !== "boolean") return null;
 
 		if (guild === null || newUser === undefined) return;
 
@@ -38,26 +38,19 @@ const predictionUserInit: Command = {
 
 		if (oldUserCheck === null || !oldUserCheck.admin) {
 			await interaction.followUp({
-				content: "Sorry, you don't have admin priveleges.",
+				content: "You do not have admin privileges on this server.",
 				ephemeral: true,
 			});
 			return;
 		}
 		if (newUserCheck === null) {
 			await interaction.followUp({
-				content: "The requested user has not signed up",
+				content: "The requested user has not signed up.",
 				ephemeral: true,
-			});
-			return;
-		}
-		if (newUserCheck.admin && admin === true) {
-			await interaction.followUp({
-				ephemeral: true,
-				content: "The requested user already has admin priveleges",
 			});
 			return;
 		} else {
-			await updateUserAdminPrivelege(newUser, guild, admin);
+			await updateUserAdminPrivilege(newUser, guild, admin);
 			await interaction.followUp({
 				content: `<@${newUser}> has Admin status: ${admin}`,
 				ephemeral: true,
@@ -67,4 +60,4 @@ const predictionUserInit: Command = {
 	},
 };
 
-export default predictionUserInit;
+export default predictionAdmin;
