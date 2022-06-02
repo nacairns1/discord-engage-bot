@@ -20,6 +20,7 @@ Inspired by Twitch predictions, a Bot to track user engagement and create predic
  - Predictions can be ended with a given prediction ID or by using an END PREDICTION button tied to each prediction message
 
 Example Prediction Flow: 
+
 ![Screenshot_20220602_160509](https://user-images.githubusercontent.com/94420090/171728651-a1e2ff7e-caed-4e31-9108-a024dbd4a861.png)
 
 ## Roles 
