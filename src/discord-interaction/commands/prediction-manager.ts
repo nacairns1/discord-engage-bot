@@ -1,9 +1,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, IntegrationApplication } from "discord.js";
+import { updateDiscordUserManagerRole } from "../../db-interactions/discord/discord-users";
 import { findGuildUsersInPrediction } from "../../db-interactions/prediction-entries/db-prediction-entries";
 import {
 	findUserGuildMembership,
 	updateUserAdminPrivilege,
+    updateUserManagerPrivilege,
 } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
 import Command from "./CommandInterface";
 
@@ -50,7 +52,7 @@ const predictionManager: Command = {
 			});
 			return;
 		} else {
-			await updateUserAdminPrivilege(newUser, guild, manager);
+			await updateDiscordUserManagerRole(newUser, guild, manager);
 			await interaction.followUp({
 				content: `<@${newUser}> has manager status: ${manager}`,
 				ephemeral: true,

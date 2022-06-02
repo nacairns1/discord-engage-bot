@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const builders_1 = require("@discordjs/builders");
+const discord_users_1 = require("../../db-interactions/discord/discord-users");
 const userGuildMemberships_1 = require("../../db-interactions/userGuildMemberships/userGuildMemberships");
 // add one specific admin to have the prediction admin privilege. Adds role if role is set for the server.
 const predictionManager = {
@@ -40,7 +41,7 @@ const predictionManager = {
             return;
         }
         else {
-            await (0, userGuildMemberships_1.updateUserAdminPrivilege)(newUser, guild, manager);
+            await (0, discord_users_1.updateDiscordUserManagerRole)(newUser, guild, manager);
             await interaction.followUp({
                 content: `<@${newUser}> has manager status: ${manager}`,
                 ephemeral: true,
