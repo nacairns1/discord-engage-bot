@@ -45,6 +45,7 @@ try {
 					content: "You do not have admin priveleges on this server",
 					ephemeral: true,
 				});
+                return;
 			}
 
             const rawContent = interaction.message.content;
