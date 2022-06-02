@@ -29,7 +29,7 @@ const predictionGiveUser: Command = {
 				.setRequired(true)
 		),
 	async execute(interaction: CommandInteraction) {
-		await interaction.deferReply();
+		await interaction.deferReply({ephemeral: true});
 		const sendingUser = interaction.user;
 		const receivingUser = interaction.options.getUser("user", true);
 		const points = interaction.options.get("points", true).value;
