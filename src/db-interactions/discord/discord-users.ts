@@ -150,7 +150,6 @@ export const updateDiscordUserManagerRole = async (
 	manager: boolean
 ) => {
 	const prevUGM = await findUserGuildMembership(userId, guildId);
-
 	
 	if (prevUGM === null) return null;
 

@@ -41,7 +41,8 @@ const predictionManager = {
             return;
         }
         else {
-            await (0, discord_users_1.updateDiscordUserManagerRole)(newUser, guild, manager);
+            const newRole = await (0, discord_users_1.updateDiscordUserManagerRole)(newUser, guild, manager);
+            console.log(`successfully created manager ${newUser} in guild ${guild}`);
             await interaction.followUp({
                 content: `<@${newUser}> has manager status: ${manager}`,
                 ephemeral: true,
