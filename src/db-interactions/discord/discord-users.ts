@@ -151,8 +151,10 @@ export const updateDiscordUserManagerRole = async (
 ) => {
 	const prevUGM = await findUserGuildMembership(userId, guildId);
 
+	
 	if (prevUGM === null) return null;
 
+	console.log('updating manager status....');
 	if (prevUGM.manager === manager) {
 		return null;
 	} else {

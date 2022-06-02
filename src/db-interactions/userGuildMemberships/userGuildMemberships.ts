@@ -60,10 +60,11 @@ export const updateUserManagerPrivilege = async (
 	guildId: string,
 	manager: boolean
 ) => {
-	await prisma.userGuildMemberships.update({
+	const updatedManagerPrivilege = await prisma.userGuildMemberships.update({
 		where: { userId_guildId: { userId, guildId } },
 		data: { manager },
 	});
+	return updatedManagerPrivilege;
 };
 
 export const updateUserPoints = async (
