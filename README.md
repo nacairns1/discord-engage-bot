@@ -4,7 +4,7 @@ Inspired by Twitch predictions, a Bot to track user engagement and create predic
 
 ## Features
 - Point System 
-- Engagement Tracking which is OPT-IN ONLY
+- Engagement Tracking which is **OPT-IN ONLY**
  - Points on: Initial opt-in, Message Creation, Message Reaction, Voice channel activity
 - Spam Protection and Inactivity detection
 - Role System
