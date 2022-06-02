@@ -14,7 +14,7 @@ const checkVoiceState = async (
 			guildId,
 			pointsToAdd
 		);
-		console.log(`activity points created for ${userId} in ${guildId} for a messageCreation event!`);
+		if (updatePoints !== null) console.log(`activity points created for ${userId} in ${guildId} for a voice channel event!`);
 		return updatePoints;
 	} catch (e) {
 		console.error(e);
