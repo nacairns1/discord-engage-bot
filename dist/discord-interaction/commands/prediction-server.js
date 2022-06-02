@@ -12,7 +12,7 @@ const help_embed_1 = require("../embeds/help-embed");
 // these values will be manual right now but can be refactored later and added to the db as default values and thus customizable.
 const predictionServer = {
     data: new builders_1.SlashCommandBuilder()
-        .setName("prediction-server")
+        .setName("prediction-setup")
         .setDescription("Set up bot")
         .addSubcommand((subcommand) => subcommand
         .setName("initialize")
@@ -40,9 +40,10 @@ const predictionServer = {
             const owner = await interaction.guild.fetchOwner();
             if (interaction.guildId === null)
                 return;
+            const ugmCheck = await (0, userGuildMemberships_1.findUserGuildMembership)(owner.id, interaction.guildId);
             if (await (0, discord_users_1.addNewDiscordUserInGuild)(owner.id, interaction.guildId, 500, true) === null) {
                 console.log('existing user detected. upgrading to admin...');
-                await (0, userGuildMemberships_1.updateUserAdminPrivelege)(owner.id, interaction.guildId, true);
+                await (0, userGuildMemberships_1.updateUserAdminPrivilege)(owner.id, interaction.guildId, true);
             }
             ;
             const channel = interaction.client.channels.cache.get(initChannelid);

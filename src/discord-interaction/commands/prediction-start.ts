@@ -1,7 +1,5 @@
 import {
-	TextInputComponent,
 	CommandInteraction,
-	MessageComponentBuilder,
 	EmbedBuilder,
 } from "discord.js";
 import {
@@ -12,7 +10,6 @@ import {
 import Command from "./CommandInterface";
 import { checkPointsMessageButton } from "../buttons/check-name-button";
 import { findUserGuildMembership } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
-import { addNewDiscordPredictionEntry } from "../../db-interactions/discord/discord-transactions";
 import { addNewPredictionInGuildByCreator } from "../../db-interactions/discord/discord-predictions";
 import {
 	findPredictionById,
@@ -22,7 +19,6 @@ import { findGuildUsersInPrediction } from "../../db-interactions/prediction-ent
 
 import {
 	closedMessageButton,
-	enterButton,
 	enterMessageButton,
 } from "../buttons/enter-prediction-buton";
 import { endPredictionButton } from "../buttons/prediction-end-button";
@@ -31,7 +27,7 @@ import { endPredictionButton } from "../buttons/prediction-end-button";
 
 const predictionStart: Command = {
 	data: new SlashCommandBuilder()
-		.setName("prediction-start")
+		.setName("prediction")
 		.setDescription("Creates a new active Prediction")
 		.addStringOption((option) =>
 			option
@@ -112,7 +108,15 @@ const predictionStart: Command = {
 				user.id,
 				interaction.guildId
 			);
-			if (userCheck === null || !userCheck.admin) {
+			if (userCheck === null || !userCheck.manager) {
+				await interaction.followUp({
+					content:
+						"You do not have permission to start a prediction in this server.",
+					ephemeral: true,
+				});
+				return;
+			}
+			if (!(userCheck.manager || userCheck.admin)) {
 				await interaction.followUp({
 					content:
 						"You do not have permission to start a prediction in this server.",
@@ -124,6 +128,7 @@ const predictionStart: Command = {
 			console.error(e);
 			return;
 		}
+		
 		let prediction;
 		try {
 			prediction = await addNewPredictionInGuildByCreator(

@@ -14,12 +14,11 @@ const listEmbedBuilder = (lp) => {
         if (i >= 3)
             break;
         let predictionId = lp[i].predictionId;
-        let isOpen = lp[i].isOpen;
         let outcome_1 = lp[i].outcome_1;
         let outcome_2 = lp[i].outcome_2;
         fields.push({
-            name: predictionId,
-            value: `${outcome_1} OR ${outcome_2} \n Still Open? ${isOpen}`,
+            value: predictionId,
+            name: `${outcome_1} OR ${outcome_2}`,
         });
     }
     return new discord_js_1.EmbedBuilder()
@@ -32,14 +31,14 @@ const listEmbedBuilder = (lp) => {
 const predictionUserInit = {
     data: new builders_1.SlashCommandBuilder()
         .setName("prediction-list-active")
-        .setDescription("Lists all active predictions on the guild"),
+        .setDescription("Lists active predictions in the server"),
     async execute(interaction) {
         const guildId = interaction.guildId;
         if (guildId === null)
-            throw Error("cannot check predictions outside of guild");
+            throw Error("cannot check predictions outside of a server");
         await interaction.deferReply();
         const predictions = await (0, discord_predictions_1.getAllActivePredictionsInGuildId)(guildId);
-        if (predictions === null) {
+        if (predictions === null || predictions.length === 0) {
             await interaction.followUp({
                 content: "No active predictions found!",
                 ephemeral: true,

@@ -12,7 +12,7 @@ const prediction_end_button_1 = require("../buttons/prediction-end-button");
 // starts a new prediction
 const predictionStart = {
     data: new builders_1.SlashCommandBuilder()
-        .setName("prediction-start")
+        .setName("prediction")
         .setDescription("Creates a new active Prediction")
         .addStringOption((option) => option
         .setName("title")
@@ -70,7 +70,14 @@ const predictionStart = {
         }
         try {
             const userCheck = await (0, userGuildMemberships_1.findUserGuildMembership)(user.id, interaction.guildId);
-            if (userCheck === null || !userCheck.admin) {
+            if (userCheck === null || !userCheck.manager) {
+                await interaction.followUp({
+                    content: "You do not have permission to start a prediction in this server.",
+                    ephemeral: true,
+                });
+                return;
+            }
+            if (!(userCheck.manager || userCheck.admin)) {
                 await interaction.followUp({
                     content: "You do not have permission to start a prediction in this server.",
                     ephemeral: true,

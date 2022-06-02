@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateDiscordUserAdminRole = exports.addPointsToUserOnEngagement = exports.removePointsFromDiscordUserInGuild = exports.addPointsToDiscordUserInGuild = exports.addNewDiscordUserInGuild = void 0;
+exports.updateDiscordUserManagerRole = exports.updateDiscordUserAdminRole = exports.addPointsToUserOnEngagement = exports.removePointsFromDiscordUserInGuild = exports.addPointsToDiscordUserInGuild = exports.addNewDiscordUserInGuild = void 0;
 const userGuildMemberships_1 = require("../userGuildMemberships/userGuildMemberships");
 const db_users_1 = require("../users/db-users");
 const discord_transactions_1 = require("./discord-transactions");
@@ -80,8 +80,21 @@ const updateDiscordUserAdminRole = async (userId, guildId, admin) => {
         return null;
     }
     else {
-        const newUGM = await (0, userGuildMemberships_1.updateUserAdminPrivelege)(userId, guildId, admin);
+        const newUGM = await (0, userGuildMemberships_1.updateUserAdminPrivilege)(userId, guildId, admin);
         return newUGM;
     }
 };
 exports.updateDiscordUserAdminRole = updateDiscordUserAdminRole;
+const updateDiscordUserManagerRole = async (userId, guildId, manager) => {
+    const prevUGM = await (0, userGuildMemberships_1.findUserGuildMembership)(userId, guildId);
+    if (prevUGM === null)
+        return null;
+    if (prevUGM.manager === manager) {
+        return null;
+    }
+    else {
+        const newUGM = await (0, userGuildMemberships_1.updateUserManagerPrivilege)(userId, guildId, manager);
+        return newUGM;
+    }
+};
+exports.updateDiscordUserManagerRole = updateDiscordUserManagerRole;

@@ -13,11 +13,11 @@ const messageReactionAdd: Event = {
 		const userId = user.id;
  
 		if (guildId === null ) return;
+
 		try {
 			const isGuildActive = await findGuild(guildId);
 			const isUserActive = await findUser(userId);
 			if (!(isGuildActive && isUserActive)) return;
-
             await updateDiscordUserPointsOnEngagement(userId, guildId, 100);
 		} catch (e) {
 			console.error(e);

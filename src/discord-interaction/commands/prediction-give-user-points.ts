@@ -12,7 +12,7 @@ import Command from "./CommandInterface";
 
 const predictionGiveUser: Command = {
 	data: new SlashCommandBuilder()
-		.setName("prediction-give-user")
+		.setName("prediction-send-points")
 		.setDescription("Send a user points some points")
 		.addUserOption((option) =>
 			option
@@ -81,14 +81,13 @@ const predictionGiveUser: Command = {
 				return;
 			}
 
-			await interaction.reply(`sending points to <@${receivingUser.id}>...`);
+			
 			await addPointsToDiscordUserInGuild(
 				sendingUser.id,
 				interaction.guildId,
 				points
 			);
-			await interaction.editReply(`success!`);
-			await interaction.deleteReply();
+			await interaction.followUp({content: `Successfully sent ${points} points to <@${receivingUser.id}>!`, ephemeral: true});
 			return;
 		} catch (e) {
 			console.error(e);

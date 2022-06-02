@@ -22,21 +22,6 @@ const predictionUserInit = {
                 await interaction.followUp("Must use this command inside of a server");
                 return;
             }
-            const ugm = await (0, userGuildMemberships_1.findUserGuildMembership)(userId, guildId);
-            if (ugm === null) {
-                await interaction.followUp({
-                    content: "You were not found to be a registered member",
-                    ephemeral: true,
-                });
-                return;
-            }
-            if (!ugm.admin) {
-                await interaction.followUp({
-                    content: "You do not have admin priveleges on this server",
-                    ephemeral: true,
-                });
-                return;
-            }
             const predictionId = interaction.options.get("predictionid", true).value;
             if (typeof predictionId !== 'string') {
                 interaction.followUp({
@@ -45,9 +30,33 @@ const predictionUserInit = {
                 });
                 return;
             }
+            const ugm = await (0, userGuildMemberships_1.findUserGuildMembership)(userId, guildId);
+            // guild membership checks
+            if (ugm === null) {
+                await interaction.followUp({
+                    content: "You were not found to be a registered member",
+                    ephemeral: true,
+                });
+                return;
+            }
             const p = await (0, db_predictions_1.findPredictionById)(predictionId);
             if (p === null)
                 throw Error("no prediction found");
+            const creatorId = p.creatorId;
+            if (!ugm.admin && (interaction.user.id === creatorId && !ugm.manager)) {
+                await interaction.followUp({
+                    content: "You do not have manager privileges on this server",
+                    ephemeral: true,
+                });
+                return;
+            }
+            else if (!ugm.admin && !(creatorId === interaction.user.id && ugm.manager)) {
+                await interaction.followUp({
+                    content: "You do not have admin privileges on this server",
+                    ephemeral: true,
+                });
+                return;
+            }
             const { outcome_1, outcome_2 } = p;
             const selectMenu = (0, prediction_end_menu_1.predictionEndMenuFunc)(outcome_1, outcome_2);
             const actionRow = new builders_1.ActionRowBuilder().addComponents(selectMenu);

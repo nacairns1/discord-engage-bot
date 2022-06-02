@@ -7,7 +7,7 @@ import {
 import { client } from "..";
 import { addNewDiscordGuild } from "../../db-interactions/discord/discord-guilds";
 import { addNewDiscordUserInGuild } from "../../db-interactions/discord/discord-users";
-import { updateUserAdminPrivelege } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
+import { findUserGuildMembership, updateUserAdminPrivilege } from "../../db-interactions/userGuildMemberships/userGuildMemberships";
 import {
 	joinRowInMessage,
 } from "../action-rows/join-action-row";
@@ -20,7 +20,7 @@ import Command from "./CommandInterface";
 
 const predictionServer: Command = {
 	data: new SlashCommandBuilder()
-		.setName("prediction-server")
+		.setName("prediction-setup")
 		.setDescription("Set up bot")
 		.addSubcommand((subcommand) =>
 			subcommand
@@ -52,10 +52,13 @@ const predictionServer: Command = {
 			};
 			const initChannelid = initChannel.id;
 			const owner = await interaction.guild.fetchOwner();
+			
 			if (interaction.guildId === null) return;
+			const ugmCheck = await findUserGuildMembership(owner.id, interaction.guildId);
+
 			if (await addNewDiscordUserInGuild(owner.id, interaction.guildId, 500, true) === null) {
 				console.log('existing user detected. upgrading to admin...');
-				await updateUserAdminPrivelege(owner.id, interaction.guildId, true);
+				await updateUserAdminPrivilege(owner.id, interaction.guildId, true);
 			};
 
 			const channel = interaction.client.channels.cache.get(initChannelid);

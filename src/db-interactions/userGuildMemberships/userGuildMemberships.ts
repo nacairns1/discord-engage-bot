@@ -43,7 +43,7 @@ export const addNewUserGuildMembership = async (
 	return userGuildMembership;
 };
 
-export const updateUserAdminPrivelege = async (
+export const updateUserAdminPrivilege = async (
 	userId: string,
 	guildId: string,
 	admin: boolean
@@ -53,6 +53,17 @@ export const updateUserAdminPrivelege = async (
 		data: { admin },
 	});
 	return userGuildMembership;
+};
+
+export const updateUserManagerPrivilege = async (
+	userId: string,
+	guildId: string,
+	manager: boolean
+) => {
+	await prisma.userGuildMemberships.update({
+		where: { userId_guildId: { userId, guildId } },
+		data: { manager },
+	});
 };
 
 export const updateUserPoints = async (
@@ -85,7 +96,7 @@ export const incrementUserPoints = async (
 		});
 		return updatedMemberPoints;
 	} catch (e) {
-        console.error(e);
+		console.error(e);
 		return null;
 	}
 };
