@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Guilds {
+  guildId                String                 @id
+  timeCreated            String
+  guildPredictionEntries PredictionEntries[]
+  userMembers            UserGuildMemberships[]
+}
+
+model Users {
+  userId           String                 @id
+  timeCreated      String
+  guildMemberships UserGuildMemberships[]
+}
+
+model UserGuildMemberships {
+  userId            String
+  guildId           String
+  points            Int                 @default(0)
+  timeCreated       String
+  lastEarnedPonts   String              @default("")
+  admin             Boolean?            @default(false)
+  manager           Boolean?            @default(false)
+  guild             Guilds              @relation(fields: [guildId], references: [guildId])
+  user              Users               @relation(fields: [userId], references: [userId])
+  predictionEntries PredictionEntries[]
+
+  @@unique([userId, guildId])
+}
+
+model Predictions {
+  predictionId      String              @id
+  guildId           String
+  creatorId         String
+  outcome_1         String
+  outcome_2         String
+  active            Boolean?            @default(dbgenerated("'FALSE'"))
+  isOpen            Boolean             @default(false)
+  decided_outcome   String?
+  timeCreated       String
+  timeEnded         String?
+  predictionEntries PredictionEntries[]
+}
+
+model PredictionEntries {
+  predictionId      String
+  userId            String
+  guildId           String
+  predicted_outcome String
+  decided_outcome   String?
+  wageredPoints     Int
+  earnedPoints      Int
+  timeCreated       String
+  timeEdited        String?
+  guild             Guilds               @relation(fields: [guildId], references: [guildId])
+  prediction        Predictions          @relation(fields: [predictionId], references: [predictionId])
+  userGuildMember   UserGuildMemberships @relation(fields: [userId, guildId], references: [userId, guildId])
+
+  @@unique([predictionId, userId, guildId])
+}
