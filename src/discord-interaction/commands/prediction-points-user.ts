@@ -62,7 +62,7 @@ const pointsEmbedGenerator = (
 
 	return new EmbedBuilder()
 		.setAuthor({ name: "Predictions Bot" })
-		.setTitle(userId)
+		.setTitle("User Info!")
 		.setFields([
 			{ name: "Points" , value: `${points}`},
 			{ name: "Time Joined", value: timeOptedIn },

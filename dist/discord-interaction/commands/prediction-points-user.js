@@ -48,7 +48,7 @@ const pointsEmbedGenerator = (userId, timeOptedIn, points, admin, manager) => {
     const permissions = admin ? "Admin" : manager ? "Manager" : "Player";
     return new discord_js_1.EmbedBuilder()
         .setAuthor({ name: "Predictions Bot" })
-        .setTitle(userId)
+        .setTitle("User Info!")
         .setFields([
         { name: "Points", value: `${points}` },
         { name: "Time Joined", value: timeOptedIn },
