@@ -43,18 +43,20 @@ const voiceStateUpdate: Event = {
 			const intervalToEnd = client.intervals?.get(newUserId);
 			if (intervalToEnd) {
 				clearInterval(intervalToEnd);
+				console.log(`voice activity points ended for ${newUserId} in ${guildId}!`);
 				client.intervals?.delete(newUserId);
 			}
 			return;
 		} else {
-			const timer = setInterval(async () => {
-				await checkVoiceState(newUserId, guildId, 100);
-			}, 900000);
-
+			
 			// new voice state is the member joining or changing a voice channel.
 			//  Initialize the interval for the user if they are not just changing the channel
 
 			if (client.intervals?.get(newUserId)) return;
+			const timer = setInterval(async () => {
+				await checkVoiceState(newUserId, guildId, 100);
+			}, 900000);
+
 
 			client.intervals?.set(newUserId, timer);
 			return;
