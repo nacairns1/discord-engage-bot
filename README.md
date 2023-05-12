@@ -2,7 +2,6 @@
 
 Inspired by Twitch predictions, a Bot to track user engagement and create prediction events in Discord chat.
 
-Add to your server [here](https://discord.com/api/oauth2/authorize?client_id=724635854944993281&permissions=60398136432&scope=bot%20applications.commands)
 
 ## Features
 - Point System 
